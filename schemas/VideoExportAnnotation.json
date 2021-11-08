@@ -1,0 +1,470 @@
+{
+  "title": "VideoExportAnnotation",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "#/definitions/MetaData"
+    },
+    "instances": {
+      "title": "Instances",
+      "default": [],
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/EventInstance"
+          },
+          {
+            "$ref": "#/definitions/BboxInstance"
+          }
+        ]
+      }
+    },
+    "tags": {
+      "title": "Tags",
+      "default": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "metadata"
+  ],
+  "definitions": {
+    "LastUserAction": {
+      "title": "LastUserAction",
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "format": "email"
+        },
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "number"
+        }
+      },
+      "required": [
+        "email",
+        "timestamp"
+      ]
+    },
+    "AnnotationStatusEnum": {
+      "title": "AnnotationStatusEnum",
+      "description": "An enumeration.",
+      "enum": [
+        "NotStarted",
+        "InProgress",
+        "QualityCheck",
+        "Returned",
+        "Completed",
+        "Skipped"
+      ],
+      "type": "string"
+    },
+    "MetaData": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "lastAction": {
+          "$ref": "#/definitions/LastUserAction"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "projectId": {
+          "title": "Projectid",
+          "type": "integer"
+        },
+        "annotatorEmail": {
+          "title": "Annotatoremail",
+          "type": "string",
+          "format": "email"
+        },
+        "qaEmail": {
+          "title": "Qaemail",
+          "type": "string",
+          "format": "email"
+        },
+        "name": {
+          "title": "Name",
+          "minLength": 1,
+          "type": "string"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/definitions/AnnotationStatusEnum"
+        },
+        "duration": {
+          "title": "Duration",
+          "type": "integer"
+        },
+        "error": {
+          "title": "Error",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "url"
+      ]
+    },
+    "BaseImageRoleEnum": {
+      "title": "BaseImageRoleEnum",
+      "description": "An enumeration.",
+      "enum": [
+        "Customer"
+      ],
+      "type": "string"
+    },
+    "UserAction": {
+      "title": "UserAction",
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "format": "email"
+        },
+        "role": {
+          "$ref": "#/definitions/BaseImageRoleEnum"
+        }
+      },
+      "required": [
+        "email",
+        "role"
+      ]
+    },
+    "PointLabels": {
+      "title": "PointLabels",
+      "type": "object",
+      "patternProperties": {
+        "^[0-9]*$": {
+          "type": "string"
+        }
+      }
+    },
+    "EventInstanceMetadata": {
+      "title": "EventInstanceMetadata",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "title": "Createdat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "title": "Updatedat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "creationType": {
+          "title": "Creationtype",
+          "const": "Pre-annotation"
+        },
+        "classId": {
+          "title": "Classid",
+          "type": "integer"
+        },
+        "type": {
+          "title": "Type",
+          "const": "event",
+          "type": "string"
+        },
+        "className": {
+          "title": "Classname",
+          "type": "string"
+        },
+        "pointLabels": {
+          "$ref": "#/definitions/PointLabels"
+        },
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "end": {
+          "title": "End",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "classId",
+        "start",
+        "end"
+      ]
+    },
+    "Attribute": {
+      "title": "Attribute",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "groupId": {
+          "title": "Groupid",
+          "type": "integer"
+        },
+        "name": {
+          "title": "Name",
+          "minLength": 1,
+          "type": "string"
+        },
+        "groupName": {
+          "title": "Groupname",
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "EventTimeStamp": {
+      "title": "EventTimeStamp",
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "integer"
+        },
+        "attributes": {
+          "title": "Attributes",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Attribute"
+          }
+        }
+      },
+      "required": [
+        "timestamp",
+        "attributes"
+      ]
+    },
+    "EventParameter": {
+      "title": "EventParameter",
+      "type": "object",
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "end": {
+          "title": "End",
+          "type": "integer"
+        },
+        "timestamps": {
+          "title": "Timestamps",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventTimeStamp"
+          }
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "timestamps"
+      ]
+    },
+    "EventInstance": {
+      "title": "EventInstance",
+      "type": "object",
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/EventInstanceMetadata"
+        },
+        "parameters": {
+          "title": "Parameters",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventParameter"
+          }
+        }
+      },
+      "required": [
+        "meta",
+        "parameters"
+      ]
+    },
+    "BBoxInstanceMetadata": {
+      "title": "BBoxInstanceMetadata",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "title": "Createdat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "title": "Updatedat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "creationType": {
+          "title": "Creationtype",
+          "const": "Pre-annotation"
+        },
+        "classId": {
+          "title": "Classid",
+          "type": "integer"
+        },
+        "type": {
+          "title": "Type",
+          "const": "bbox",
+          "type": "string"
+        },
+        "className": {
+          "title": "Classname",
+          "type": "string"
+        },
+        "pointLabels": {
+          "$ref": "#/definitions/PointLabels"
+        },
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "end": {
+          "title": "End",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "classId",
+        "start",
+        "end"
+      ]
+    },
+    "BboxPoints": {
+      "title": "BboxPoints",
+      "type": "object",
+      "properties": {
+        "x1": {
+          "title": "X1",
+          "type": "number"
+        },
+        "x2": {
+          "title": "X2",
+          "type": "number"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "number"
+        },
+        "y2": {
+          "title": "Y2",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x1",
+        "x2",
+        "y1",
+        "y2"
+      ]
+    },
+    "BboxTimeStamp": {
+      "title": "BboxTimeStamp",
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "integer"
+        },
+        "attributes": {
+          "title": "Attributes",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Attribute"
+          }
+        },
+        "points": {
+          "$ref": "#/definitions/BboxPoints"
+        }
+      },
+      "required": [
+        "timestamp",
+        "attributes",
+        "points"
+      ]
+    },
+    "BboxParameter": {
+      "title": "BboxParameter",
+      "type": "object",
+      "properties": {
+        "start": {
+          "title": "Start",
+          "type": "integer"
+        },
+        "end": {
+          "title": "End",
+          "type": "integer"
+        },
+        "timestamps": {
+          "title": "Timestamps",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BboxTimeStamp"
+          }
+        }
+      },
+      "required": [
+        "start",
+        "end",
+        "timestamps"
+      ]
+    },
+    "BboxInstance": {
+      "title": "BboxInstance",
+      "type": "object",
+      "properties": {
+        "meta": {
+          "$ref": "#/definitions/BBoxInstanceMetadata"
+        },
+        "parameters": {
+          "title": "Parameters",
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BboxParameter"
+          }
+        }
+      },
+      "required": [
+        "meta",
+        "parameters"
+      ]
+    },
+    "Tag": {
+      "title": "Tag",
+      "type": "string"
+    }
+  }
+}

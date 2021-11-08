@@ -1,0 +1,345 @@
+{
+  "title": "VideoAnnotation",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "$ref": "#/definitions/MetaData"
+    },
+    "instances": {
+      "title": "Instances",
+      "default": [],
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/EventInstance"
+          },
+          {
+            "$ref": "#/definitions/BboxInstance"
+          }
+        ]
+      }
+    },
+    "tags": {
+      "title": "Tags",
+      "default": [],
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Tag"
+      }
+    }
+  },
+  "required": [
+    "metadata"
+  ],
+  "definitions": {
+    "LastUserAction": {
+      "title": "LastUserAction",
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "format": "email"
+        },
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "number"
+        }
+      },
+      "required": [
+        "email",
+        "timestamp"
+      ]
+    },
+    "MetaData": {
+      "title": "MetaData",
+      "type": "object",
+      "properties": {
+        "lastAction": {
+          "$ref": "#/definitions/LastUserAction"
+        },
+        "width": {
+          "title": "Width",
+          "type": "integer"
+        },
+        "height": {
+          "title": "Height",
+          "type": "integer"
+        },
+        "projectId": {
+          "title": "Projectid",
+          "type": "integer"
+        },
+        "annotatorEmail": {
+          "title": "Annotatoremail",
+          "type": "string",
+          "format": "email"
+        },
+        "qaEmail": {
+          "title": "Qaemail",
+          "type": "string",
+          "format": "email"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "duration": {
+          "title": "Duration",
+          "type": "integer"
+        }
+      }
+    },
+    "BaseImageRoleEnum": {
+      "title": "BaseImageRoleEnum",
+      "description": "An enumeration.",
+      "enum": [
+        "Customer"
+      ],
+      "type": "string"
+    },
+    "UserAction": {
+      "title": "UserAction",
+      "type": "object",
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string",
+          "format": "email"
+        },
+        "role": {
+          "$ref": "#/definitions/BaseImageRoleEnum"
+        }
+      },
+      "required": [
+        "email",
+        "role"
+      ]
+    },
+    "VideoType": {
+      "title": "VideoType",
+      "description": "An enumeration.",
+      "enum": [
+        "event",
+        "bbox"
+      ],
+      "type": "string"
+    },
+    "Attribute": {
+      "title": "Attribute",
+      "type": "object",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "groupId": {
+          "title": "Groupid",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "groupId"
+      ]
+    },
+    "BaseTimeStamp": {
+      "title": "BaseTimeStamp",
+      "type": "object",
+      "properties": {
+        "active": {
+          "title": "Active",
+          "type": "boolean"
+        },
+        "attributes": {
+          "title": "Attributes",
+          "type": "object",
+          "patternProperties": {
+            "^[-|+]$": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Attribute"
+              }
+            }
+          }
+        }
+      }
+    },
+    "EventInstance": {
+      "title": "EventInstance",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "title": "Createdat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "title": "Updatedat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "creationType": {
+          "title": "Creationtype",
+          "const": "Pre-annotation"
+        },
+        "classId": {
+          "title": "Classid",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/VideoType"
+        },
+        "locked": {
+          "title": "Locked",
+          "type": "boolean"
+        },
+        "timeline": {
+          "title": "Timeline",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/BaseTimeStamp"
+          }
+        }
+      },
+      "required": [
+        "classId",
+        "type",
+        "timeline"
+      ]
+    },
+    "BboxPoints": {
+      "title": "BboxPoints",
+      "type": "object",
+      "properties": {
+        "x1": {
+          "title": "X1",
+          "type": "number"
+        },
+        "x2": {
+          "title": "X2",
+          "type": "number"
+        },
+        "y1": {
+          "title": "Y1",
+          "type": "number"
+        },
+        "y2": {
+          "title": "Y2",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x1",
+        "x2",
+        "y1",
+        "y2"
+      ]
+    },
+    "BboxTimeStamp": {
+      "title": "BboxTimeStamp",
+      "type": "object",
+      "properties": {
+        "active": {
+          "title": "Active",
+          "type": "boolean"
+        },
+        "attributes": {
+          "title": "Attributes",
+          "type": "object",
+          "patternProperties": {
+            "^[-|+]$": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Attribute"
+              }
+            }
+          }
+        },
+        "points": {
+          "$ref": "#/definitions/BboxPoints"
+        }
+      }
+    },
+    "PointLabels": {
+      "title": "PointLabels",
+      "type": "object",
+      "patternProperties": {
+        "^[0-9]*$": {
+          "type": "string"
+        }
+      }
+    },
+    "BboxInstance": {
+      "title": "BboxInstance",
+      "type": "object",
+      "properties": {
+        "createdAt": {
+          "title": "Createdat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "title": "Updatedat",
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "updatedBy": {
+          "$ref": "#/definitions/UserAction"
+        },
+        "creationType": {
+          "title": "Creationtype",
+          "const": "Pre-annotation"
+        },
+        "classId": {
+          "title": "Classid",
+          "type": "integer"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/VideoType"
+        },
+        "locked": {
+          "title": "Locked",
+          "type": "boolean"
+        },
+        "timeline": {
+          "title": "Timeline",
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/BboxTimeStamp"
+          }
+        },
+        "pointLabels": {
+          "$ref": "#/definitions/PointLabels"
+        }
+      },
+      "required": [
+        "classId",
+        "type",
+        "timeline"
+      ]
+    },
+    "Tag": {
+      "title": "Tag",
+      "type": "string"
+    }
+  }
+}
