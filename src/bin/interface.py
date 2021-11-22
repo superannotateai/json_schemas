@@ -35,11 +35,3 @@ class CLIInterface:
             self._create_folder(schema_path)
             with open(schema_path, "w") as f:
                 f.write(schema.schema_json(indent=indent))
-
-
-def main():
-    fire.Fire(CLIInterface)
-
-
-if __name__ == "__main__":
-    main()

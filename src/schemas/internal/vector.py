@@ -2,13 +2,14 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.utils import AttributeGroup
-from src.utils import BaseVectorInstance
-from src.utils import BboxPoints
-from src.utils import Comment
-from src.utils import Metadata
-from src.utils import Tag
-from src.utils import VectorAnnotationTypeEnum
+from src.schemas.base import AttributeGroup
+from src.schemas.base import BaseVectorInstance
+from src.schemas.base import BboxPoints
+from src.schemas.base import Comment
+from src.schemas.base import Metadata
+from src.schemas.base import Tag
+from src.schemas.base import AxisPoint
+from src.schemas.base import VectorAnnotationTypeEnum
 from pydantic import BaseModel
 from pydantic import conlist
 from pydantic import Field
@@ -27,10 +28,6 @@ class ClassesJson(BaseModel):
 class Tags(BaseModel):
     items: Optional[List[str]]
 
-
-class AxisPoint(BaseModel):
-    x: float
-    y: float
 
 
 class Point(BaseVectorInstance, AxisPoint):
