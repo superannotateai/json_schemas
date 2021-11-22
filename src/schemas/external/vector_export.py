@@ -2,15 +2,15 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.utils import BaseVectorInstance as BaseInstance
-from src.utils import Attribute as BaseAttribute
-from src.utils import BboxPoints
-from src.utils import Comment
-from src.utils import Metadata
-from src.utils import Tag
-from src.utils import NotEmptyStr
-from src.utils import VectorAnnotationTypeEnum
-from src.vector import AxisPoint
+from src.schemas.utils import BaseVectorInstance as BaseInstance
+from src.schemas.utils import Attribute as BaseAttribute
+from src.schemas.utils import BboxPoints
+from src.schemas.utils import Comment
+from src.schemas.utils import Metadata
+from src.schemas.utils import Tag
+from src.schemas.utils import NotEmptyStr
+from src.schemas.utils import VectorAnnotationTypeEnum
+from src.schemas.editor.vector import AxisPoint
 from pydantic import BaseModel
 from pydantic import conlist
 from pydantic import Field

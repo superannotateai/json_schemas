@@ -1,12 +1,12 @@
 from typing import List
 from typing import Optional
 
-from src.utils import BaseImageInstance
-from src.utils import Attribute as BaseAttribute
-from src.utils import MetadataBase
-from src.utils import NotEmptyStr
-from src.utils import PixelColor
-from src.utils import Tag
+from src.schemas.utils import BaseImageInstance
+from src.schemas.utils import Attribute as BaseAttribute
+from src.schemas.utils import MetadataBase
+from src.schemas.utils import NotEmptyStr
+from src.schemas.utils import PixelColor
+from src.schemas.utils import Tag
 from pydantic import BaseModel
 from pydantic import Field
 

@@ -4,12 +4,12 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.utils import Attribute
-from src.utils import BaseInstance
-from src.utils import BboxPoints
-from src.utils import MetadataBase
-from src.utils import PointLabels
-from src.utils import Tag
+from src.schemas.utils import Attribute
+from src.schemas.utils import BaseInstance
+from src.schemas.utils import BboxPoints
+from src.schemas.utils import MetadataBase
+from src.schemas.utils import PointLabels
+from src.schemas.utils import Tag
 from pydantic import BaseModel
 from pydantic import constr
 from pydantic import Field

@@ -4,14 +4,14 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.utils import AnnotationStatusEnum
-from src.utils import Attribute as BaseAttribute
-from src.utils import BaseInstance
-from src.utils import BboxPoints
-from src.utils import MetadataBase
-from src.utils import NotEmptyStr
-from src.utils import PointLabels
-from src.utils import Tag
+from src.schemas.utils import AnnotationStatusEnum
+from src.schemas.utils import Attribute as BaseAttribute
+from src.schemas.utils import BaseInstance
+from src.schemas.utils import BboxPoints
+from src.schemas.utils import MetadataBase
+from src.schemas.utils import NotEmptyStr
+from src.schemas.utils import PointLabels
+from src.schemas.utils import Tag
 from pydantic import BaseModel
 from pydantic import conlist
 from pydantic import Field

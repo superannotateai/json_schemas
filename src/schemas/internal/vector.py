@@ -2,13 +2,13 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.utils import AttributeGroup
-from src.utils import BaseVectorInstance
-from src.utils import BboxPoints
-from src.utils import Comment
-from src.utils import Metadata
-from src.utils import Tag
-from src.utils import VectorAnnotationTypeEnum
+from src.schemas.utils import AttributeGroup
+from src.schemas.utils import BaseVectorInstance
+from src.schemas.utils import BboxPoints
+from src.schemas.utils import Comment
+from src.schemas.utils import Metadata
+from src.schemas.utils import Tag
+from src.schemas.utils import VectorAnnotationTypeEnum
 from pydantic import BaseModel
 from pydantic import conlist
 from pydantic import Field
