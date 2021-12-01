@@ -4,12 +4,12 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.schemas.utils import Attribute
-from src.schemas.utils import BaseInstance
-from src.schemas.utils import BboxPoints
-from src.schemas.utils import MetadataBase
-from src.schemas.utils import PointLabels
-from src.schemas.utils import Tag
+from src.schemas.base import Attribute
+from src.schemas.base import BaseInstance
+from src.schemas.base import BboxPoints
+from src.schemas.base import BaseMetadata
+from src.schemas.base import PointLabels
+from src.schemas.base import Tag
 from pydantic import BaseModel
 from pydantic import constr
 from pydantic import Field
@@ -21,7 +21,7 @@ class VideoType(str, Enum):
     BBOX = "bbox"
 
 
-class MetaData(MetadataBase):
+class MetaData(BaseMetadata):
     name: Optional[StrictStr]
     width: Optional[int]
     height: Optional[int]

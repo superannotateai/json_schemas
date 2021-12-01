@@ -1,15 +1,15 @@
 from typing import List
 from typing import Optional
 
-from src.schemas.utils import BaseImageInstance
-from src.schemas.utils import MetadataBase
-from src.schemas.utils import PixelColor
-from src.schemas.utils import Tag
+from src.schemas.base import BaseMetadata
+from src.schemas.base import PixelColor
+from src.schemas.base import BaseImageAnnotationInstance
+from src.schemas.base import Tag
 from pydantic import BaseModel
 from pydantic import Field
 
 
-class PixelMetaData(MetadataBase):
+class PixelMetaData(BaseMetadata):
     is_segmented: Optional[bool] = Field(None, alias="isSegmented")
 
 
@@ -17,7 +17,7 @@ class PixelAnnotationPart(BaseModel):
     color: PixelColor
 
 
-class PixelAnnotationInstance(BaseImageInstance):
+class PixelAnnotationInstance(BaseImageAnnotationInstance):
     parts: List[PixelAnnotationPart]
 
 

@@ -5,10 +5,16 @@ from typing import Any
 from typing import Type
 
 from src.utils import wrap_error
-from schemas import PixelAnnotation
-from schemas import VectorAnnotation
-from schemas import VideoExportAnnotation
-from schemas import DocumentAnnotation
+from schemas.external import PixelAnnotation as ExternalPixelAnnotation
+from schemas.external import VectorAnnotation as ExternalVectorAnnotation
+from schemas.external import VideoAnnotation as ExternalVideoAnnotation
+from schemas.external import DocumentAnnotation as ExternalDocumentAnnotation
+
+from schemas.internal import PixelAnnotation as InternalPixelAnnotation
+from schemas.internal import VectorAnnotation as InternalVectorAnnotation
+from schemas.internal import VideoAnnotation as InternalVideoAnnotation
+from schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
+
 
 from pydantic import BaseModel
 from pydantic import Extra
@@ -55,35 +61,44 @@ class BaseSchemaValidator(BaseValidator):
         return wrap_error(self._validation_output)
 
 
-class PixelValidator(BaseSchemaValidator):
-    MODEL = PixelAnnotation
-
-
-class VectorValidator(BaseSchemaValidator):
-    MODEL = VectorAnnotation
-
-
-class VideoValidator(BaseSchemaValidator):
-    MODEL = VideoExportAnnotation
-
-
-class DocumentValidator(BaseSchemaValidator):
-    MODEL = DocumentAnnotation
-
-
 class AnnotationValidator:
-    @classmethod
-    def get_pixel_validator(cls):
-        return PixelValidator
+
+    @staticmethod
+    def _get_default_schema():
+        return type('CopyOfB', BaseSchemaValidator.__bases__, dict(BaseSchemaValidator.__dict__))
 
     @classmethod
-    def get_vector_validator(cls):
-        return VectorValidator
+    def get_pixel_validator(cls, external=True):
+        schema = cls._get_default_schema()
+        if external:
+            schema.MODEL = ExternalPixelAnnotation
+        else:
+            schema.MODEL = InternalPixelAnnotation
+        return schema
 
     @classmethod
-    def get_video_validator(cls):
-        return VideoValidator
+    def get_vector_validator(cls, external=True):
+        schema = cls._get_default_schema()
+        if external:
+            schema.MODEL = ExternalVectorAnnotation
+        else:
+            schema.MODEL = InternalVectorAnnotation
+        return schema
 
     @classmethod
-    def get_document_validator(cls):
-        return DocumentValidator
+    def get_video_validator(cls, external=True):
+        schema = cls._get_default_schema()
+        if external:
+            schema.MODEL = ExternalVideoAnnotation
+        else:
+            schema.MODEL = InternalVideoAnnotation
+        return schema
+
+    @classmethod
+    def get_document_validator(cls, external=True):
+        schema = cls._get_default_schema()
+        if external:
+            schema.MODEL = ExternalDocumentAnnotation
+        else:
+            schema.MODEL = InternalDocumentAnnotation
+        return schema

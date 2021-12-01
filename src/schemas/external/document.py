@@ -1,11 +1,11 @@
 from typing import List
 from typing import Optional
 
-from src.schemas.utils import Attribute as BaseAttribute
-from src.schemas.utils import NotEmptyStr
-from src.schemas.utils import BaseInstance
-from src.schemas.utils import MetadataBase
-from src.schemas.utils import Tag
+from src.schemas.base import Attribute as BaseAttribute
+from src.schemas.base import NotEmptyStr
+from src.schemas.base import BaseInstance
+from src.schemas.base import BaseMetadata
+from src.schemas.base import Tag
 from pydantic import BaseModel
 from pydantic import Field
 
@@ -25,8 +25,8 @@ class DocumentInstance(BaseInstance):
     attributes: Optional[List[Attribute]] = Field(list())
 
 
-class DocumentExportAnnotation(BaseModel):
-    metadata: MetadataBase
+class DocumentAnnotation(BaseModel):
+    metadata: BaseMetadata
     instances: Optional[List[DocumentInstance]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())
     free_text: Optional[str] = Field(None, alias="freeText")

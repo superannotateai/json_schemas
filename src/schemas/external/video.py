@@ -4,14 +4,14 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.schemas.utils import AnnotationStatusEnum
-from src.schemas.utils import Attribute as BaseAttribute
-from src.schemas.utils import BaseInstance
-from src.schemas.utils import BboxPoints
-from src.schemas.utils import MetadataBase
-from src.schemas.utils import NotEmptyStr
-from src.schemas.utils import PointLabels
-from src.schemas.utils import Tag
+from src.schemas.base import AnnotationStatusEnum
+from src.schemas.base import Attribute as BaseAttribute
+from src.schemas.base import BaseInstance
+from src.schemas.base import BboxPoints
+from src.schemas.base import BaseMetadata
+from src.schemas.base import NotEmptyStr
+from src.schemas.base import PointLabels
+from src.schemas.base import Tag
 from pydantic import BaseModel
 from pydantic import conlist
 from pydantic import Field
@@ -29,7 +29,7 @@ class VideoType(str, Enum):
     BBOX = "bbox"
 
 
-class MetaData(MetadataBase):
+class MetaData(BaseMetadata):
     name: NotEmptyStr
     url: str
     status: Optional[AnnotationStatusEnum]
@@ -106,7 +106,7 @@ ANNOTATION_TYPES = {
 }
 
 
-class VideoExportAnnotation(BaseModel):
+class VideoAnnotation(BaseModel):
     metadata: MetaData
     instances: Optional[List[Union[EventInstance, BboxInstance]]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())

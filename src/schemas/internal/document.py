@@ -1,10 +1,10 @@
 from typing import List
 from typing import Optional
 
-from src.schemas.utils import Attribute
-from src.schemas.utils import BaseInstance
-from src.schemas.utils import MetadataBase
-from src.schemas.utils import Tag
+from src.schemas.base import Attribute
+from src.schemas.base import BaseInstance
+from src.schemas.base import MetadataBase
+from src.schemas.base import Tag
 from pydantic import BaseModel
 from pydantic import Field
 

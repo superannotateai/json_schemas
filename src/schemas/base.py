@@ -45,6 +45,13 @@ class BaseModel(PyDanticBaseModel):
         }
 
 
+
+
+class AxisPoint(BaseModel):
+    x: float
+    y: float
+
+
 class Attribute(BaseModel):
     id: Optional[StrictInt]
     group_id: Optional[StrictInt] = Field(None, alias="groupId")

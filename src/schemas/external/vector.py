@@ -2,15 +2,15 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.schemas.utils import BaseVectorInstance as BaseInstance
-from src.schemas.utils import Attribute as BaseAttribute
-from src.schemas.utils import BboxPoints
-from src.schemas.utils import Comment
-from src.schemas.utils import Metadata
-from src.schemas.utils import Tag
-from src.schemas.utils import NotEmptyStr
-from src.schemas.utils import VectorAnnotationTypeEnum
-from src.schemas.editor.vector import AxisPoint
+from src.schemas.base import BaseVectorInstance as BaseInstance
+from src.schemas.base import Attribute as BaseAttribute
+from src.schemas.base import BboxPoints
+from src.schemas.base import Comment
+from src.schemas.base import Metadata
+from src.schemas.base import Tag
+from src.schemas.base import NotEmptyStr
+from src.schemas.base import VectorAnnotationTypeEnum
+from src.schemas.base import AxisPoint
 from pydantic import BaseModel
 from pydantic import conlist
 from pydantic import Field
@@ -113,7 +113,7 @@ ANNOTATION_TYPES = {
 }
 
 
-class VectorExportAnnotation(BaseModel):
+class VectorAnnotation(BaseModel):
     metadata: Metadata
     comments: Optional[List[Comment]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())

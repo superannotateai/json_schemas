@@ -5,7 +5,7 @@ from collections import defaultdict
 from pydantic import ValidationError
 
 
-def get_tabulation() -> int:
+def get_tabulation_size() -> int:
     try:
         return int(os.get_terminal_size().columns / 2)
     except OSError:
@@ -13,7 +13,7 @@ def get_tabulation() -> int:
 
 
 def wrap_error(e: ValidationError) -> str:
-    tabulation = get_tabulation()
+    tabulation = get_tabulation_size()
     error_messages = defaultdict(list)
     for error in e.errors():
         errors_list = list(error["loc"])
