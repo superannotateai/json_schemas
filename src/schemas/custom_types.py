@@ -8,12 +8,13 @@ from pydantic.error_wrappers import ErrorWrapper
 from pydantic.errors import MissingError
 from pydantic.typing import Literal
 
-class MyFieldMeta(type):
+
+class CustomFieldMeta(type):
     def __getitem__(self, key_value_type: Any):
-        return type('MyFieldValue', (self,), {'key_value_type': key_value_type})
+        return type('CustomFieldValue', (self,), {'key_value_type': key_value_type})
 
 
-class StrictDict(metaclass=MyFieldMeta):
+class StrictDict(metaclass=CustomFieldMeta):
     key_value_type: Any = None
 
     @classmethod
@@ -37,15 +38,15 @@ class StrictDict(metaclass=MyFieldMeta):
         return v
 
 
-# class Foo(BaseModel):
-#     c: StrictDict[StrictInt, StrictStr]
-#     d: StrictDict[StrictStr, StrictInt]
-#
-#
-# Foo.validate({
-#     "c": {1: "sdfasd"},
-#     "d": {"1": 1}
-# })
+class Foo(BaseModel):
+    c: StrictDict[StrictInt, StrictStr]
+    d: StrictDict[StrictStr, StrictInt]
+
+
+Foo.validate({
+    "c": {1: "sdfasd"},
+    "d": {"1": 1}
+})
 
 
 class StrictType(BaseModel):
@@ -53,14 +54,15 @@ class StrictType(BaseModel):
         key_field = "type"
 
 
-
 class Polygon(StrictType):
     type: Literal['polygon']
     other: StrictInt
 
+
 class NoPolygon(StrictType):
     type: Literal['nopolygon']
     other: StrictStr
+
 
 class Golygon(StrictType):
     type: Literal['golygon']
@@ -68,17 +70,12 @@ class Golygon(StrictType):
 
 
 class Lolygon(StrictType):
+    type: Literal['lolygon']
     other1: StrictStr
 
 
 
-class PolyMyFieldMeta(type):
-
-    def __getitem__(self, key_value_type: Any):
-        return type('PolyMyFieldMeta', (self,), {'key_value_type': key_value_type})
-
-class PolyMorphList(metaclass=PolyMyFieldMeta):
-
+class PolyMorphList(metaclass=CustomFieldMeta):
     key_value_type: Any = None
 
     @classmethod
@@ -91,24 +88,27 @@ class PolyMorphList(metaclass=PolyMyFieldMeta):
         for loc, instance in enumerate(values):
             for model in cls.key_value_type:
 
-                # check if the model has identifier field
-                if not model.__fields__.get(model.Config.key_field):
+                # check if the model is subclass of StrictType
+                if not issubclass(model, StrictType):
                     raise ValidationError(model=model,errors=[
-                        ErrorWrapper(exc=MissingError(), loc=(model.Config.key_field,))
+                        ErrorWrapper(exc=MissingError(), loc=(loc,model.__name__))
                     ])
 
-                # TODO: check if identifier field is literal
-                # if not issubclass(model.__fields__.get(model.Config.key_field).type_.__class__,Literal.__class__):
-                #     raise TypeError(f"{model.__name__}[{model.Config.key_field}] Literal expected.")
+                # check if identifier field exist
+                if not model.__fields__.get(model.Config.key_field):
+                    raise ValidationError(model=model,errors=[
+                        ErrorWrapper(exc=MissingError(), loc=(loc,model.__name__,model.Config.key_field))
+                    ])
 
                 # check if identifier field is literal
                 if "Literal" not in str(model.__fields__.get(model.Config.key_field).type_):
-                    raise TypeError(f"{model.__name__}[{model.Config.key_field}] Literal expected.")
-
+                    raise ValidationError(model=model, errors=[
+                        ErrorWrapper(exc=TypeError("Literal expected."), loc=(loc, model.__name__, model.Config.key_field))
+                    ])
 
                 # Validate literal field only
                 try:
-                    model.__fields__.get(model.Config.key_field).validators[0](0, instance[model.Config.key_field], 0, 0, 0)
+                    model.__fields__.get(model.Config.key_field).validators[0](None, instance[model.Config.key_field], None, None, None)
                 except WrongConstantError:
                     continue
 
@@ -117,13 +117,14 @@ class PolyMorphList(metaclass=PolyMyFieldMeta):
                     model.validate(instance)
                     break
                 except ValidationError as e:
-                    e.errors()[0]["instance_loc"] = loc
-                    errors.append(e)
+                    errors.append(ErrorWrapper(exc=e.raw_errors[0].exc,loc= tuple([loc] + list(e.errors()[0]['loc']))))
 
-        print(errors)
+        if errors:
+            raise ValidationError(
+                model=cls,
+                errors=errors
+            )
         return values
-
-
 
 # class Jungle(BaseModel):
 #     tree: PolyMorphList[Polygon, NoPolygon, Golygon, Lolygon]
@@ -131,10 +132,9 @@ class PolyMorphList(metaclass=PolyMyFieldMeta):
 #
 # Jungle.validate({"tree" : [
 #     {"type": "polygon", "other": 1},
-#     {"type": "nopolygon", "other": "string"},
-#     {"type": "golygon", "other": "some string"},
-#     {"type": "golygon", "other": "some string"},
-#     {"type": "golygon", "other1": "some string"},
+#     {"type": "nopolygon", "other": []},
+#     {"type": "golygon", "other1": "1"},
+#     {"type": "lolygon" , "other1": 12}
 # ]})
 
 
