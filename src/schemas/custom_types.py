@@ -23,18 +23,39 @@ class StrictDict(metaclass=CustomFieldMeta):
 
     @classmethod
     def validate(cls, v):
+
         if not isinstance(v, dict):
             raise TypeError("type dict expected")
+
         key_type, value_type = cls.key_value_type
         errors = []
+
         for key in v:
-            if not isinstance(key, key_type):
-                errors.append(TypeError(f"[{key}] key expected {key_type.__name__}"))
-                continue
-            if not isinstance(v[key], value_type):
-                errors.append(TypeError(f"[{key}].value expected {value_type.__name__}"))
-        if errors:
-            print(errors)
+            try:
+                key_type(key)
+            except ValidationError as e:
+                errors.append("")
+
+            try:
+                value_type(v[key])
+            except ValidationError as e:
+                errors.append("")
+
+
+            # if not isinstance(key, key_type):
+            #     errors.append(TypeError(f"[{key}] key expected {key_type.__name__}"))
+            #     continue
+            # if not isinstance(v[key], value_type):
+            #     errors.append(TypeError(f"[{key}].value expected {value_type.__name__}"))
+
+
+        # if errors:
+        #     raise ValidationError(
+        #         model=cls,
+        #         errors=errors
+        #     )
+
+
         return v
 
 
