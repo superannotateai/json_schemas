@@ -7,6 +7,13 @@ from pydantic import ValidationError
 from pydantic.error_wrappers import ErrorWrapper
 from pydantic.errors import MissingError
 from pydantic.typing import Literal
+from typing import TypeVar
+from typing import Generic
+from typing import Callable
+from typing import Generator
+from types import new_class
+from typingx import isinstancex
+from typing import cast
 
 
 class CustomFieldMeta(type):
@@ -14,6 +21,37 @@ class CustomFieldMeta(type):
         return type('CustomFieldValue', (self,), {'key_value_type': key_value_type})
 
 
+
+T = TypeVar("T")
+class Strict(Generic[T]):
+    __type_like__: T
+
+    @staticmethod
+    def _display_type(v: Any) -> str:
+        try:
+            return v.__name__
+        except AttributeError:
+            return str(v).replace("typing.", "")
+
+    @classmethod
+    def __class_getitem__(cls, type_like: T) -> T:
+        new_cls = new_class(
+            f"Strict[{cls._display_type(type_like)}]",
+            (cls,),
+            {},
+            lambda ns: ns.update({"__type_like__": type_like}),
+        )
+        return cast(T, new_cls)
+
+    @classmethod
+    def __get_validators__(cls) -> Generator[Callable[..., Any], None, None]:
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, value: Any) -> T:
+        if not isinstancex(value, cls.__type_like__):
+            raise TypeError(f"{value!r} is not of valid type")
+        return value
 
 
 class StrictDict(metaclass=CustomFieldMeta):
@@ -42,7 +80,6 @@ class StrictDict(metaclass=CustomFieldMeta):
                 value_type(v[key])
             except ValidationError as e:
                 errors.append("")
-
         return v
 
 
@@ -144,11 +181,6 @@ class PolyMorphList(metaclass=CustomFieldMeta):
 #     {"type": "golygon", "other1": "1"},
 #     {"type": "lolygon" , "other1": 12}
 # ]})
-
-
-
-
-
 
 
 
