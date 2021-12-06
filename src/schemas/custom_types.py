@@ -14,6 +14,8 @@ class CustomFieldMeta(type):
         return type('CustomFieldValue', (self,), {'key_value_type': key_value_type})
 
 
+
+
 class StrictDict(metaclass=CustomFieldMeta):
     key_value_type: Any = None
 
@@ -41,31 +43,16 @@ class StrictDict(metaclass=CustomFieldMeta):
             except ValidationError as e:
                 errors.append("")
 
-
-            # if not isinstance(key, key_type):
-            #     errors.append(TypeError(f"[{key}] key expected {key_type.__name__}"))
-            #     continue
-            # if not isinstance(v[key], value_type):
-            #     errors.append(TypeError(f"[{key}].value expected {value_type.__name__}"))
-
-
-        # if errors:
-        #     raise ValidationError(
-        #         model=cls,
-        #         errors=errors
-        #     )
-
-
         return v
 
 
 class Foo(BaseModel):
-    c: StrictDict[StrictInt, StrictStr]
+    c: StrictDict[StrictInt, StrictInt]
     d: StrictDict[StrictStr, StrictInt]
 
 
 Foo.validate({
-    "c": {1: "sdfasd"},
+    "c": {1: "1"},
     "d": {"1": 1}
 })
 
