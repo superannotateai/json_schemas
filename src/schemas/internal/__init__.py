@@ -1,7 +1,7 @@
-from document import DocumentAnnotation
-from video import VideoAnnotation
-from pixel import PixelAnnotation
-from vector import VectorAnnotation
+from src.schemas.internal.document import DocumentAnnotation
+from src.schemas.internal.video import VideoAnnotation
+from src.schemas.internal.pixel import PixelAnnotation
+from src.schemas.internal.vector import VectorAnnotation
 
 
 __all__ = [

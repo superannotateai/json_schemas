@@ -5,23 +5,25 @@ from typing import Optional
 from typing import Union
 
 from src.schemas.base import AnnotationStatusEnum
-from src.schemas.base import Attribute as BaseAttribute
+from src.schemas.base import BaseAttribute
 from src.schemas.base import BaseInstance
 from src.schemas.base import BboxPoints
 from src.schemas.base import BaseMetadata
 from src.schemas.base import NotEmptyStr
 from src.schemas.base import PointLabels
 from src.schemas.base import Tag
+
 from pydantic import BaseModel
+from pydantic import StrictBool
 from pydantic import conlist
 from pydantic import Field
+from pydantic import StrictInt
+from pydantic import StrictStr
 
 
 class Attribute(BaseAttribute):
-    id: Optional[int]
-    group_id: Optional[int] = Field(None, alias="groupId")
     name: NotEmptyStr
-    group_name: NotEmptyStr = Field(None, alias="groupName")
+    group_name: NotEmptyStr = Field(alias="groupName")
 
 
 class VideoType(str, Enum):
@@ -30,16 +32,16 @@ class VideoType(str, Enum):
 
 
 class MetaData(BaseMetadata):
-    name: NotEmptyStr
-    url: str
+    width: Optional[StrictInt]
+    height: Optional[StrictInt]
     status: Optional[AnnotationStatusEnum]
-    duration: Optional[int]
-    error: Optional[bool]
+    duration: Optional[StrictInt]
+    error: Optional[StrictBool]
 
 
 class BaseTimeStamp(BaseModel):
-    timestamp: int
-    attributes: List[Attribute]
+    timestamp: StrictInt
+    attributes: Optional[List[Attribute]]
 
 
 class BboxTimeStamp(BaseTimeStamp):
@@ -52,21 +54,20 @@ class EventTimeStamp(BaseTimeStamp):
 
 class InstanceMetadata(BaseInstance):
     type: VideoType
-    class_name: Optional[str] = Field(alias="className")
-    point_labels: Optional[PointLabels] = Field(None, alias="pointLabels")
-    start: int
-    end: int
+    start: StrictInt
+    end: StrictInt
 
     class Config:
         fields = {"creation_type": {"exclude": True}}
 
 
 class BBoxInstanceMetadata(InstanceMetadata):
-    type: str = Field(VideoType.BBOX, const=True)
+    type: StrictStr = Field(VideoType.BBOX, const=True)
+    point_labels: Optional[PointLabels] = Field(alias="pointLabels")
 
 
 class EventInstanceMetadata(InstanceMetadata):
-    type: str = Field(VideoType.EVENT, const=True)
+    type: StrictStr = Field(VideoType.EVENT, const=True)
 
 
 class BaseVideoInstance(BaseModel):
@@ -78,16 +79,16 @@ class BaseVideoInstance(BaseModel):
 
 
 class BaseParameter(BaseModel):
-    start: int
-    end: int
+    start: StrictInt
+    end: StrictInt
 
 
 class BboxParameter(BaseParameter):
-    timestamps: conlist(BboxTimeStamp, min_items=1)
+    timestamps: conlist(BboxTimeStamp, min_items=2)
 
 
 class EventParameter(BaseParameter):
-    timestamps: conlist(EventTimeStamp, min_items=1)
+    timestamps: conlist(EventTimeStamp, min_items=2)
 
 
 class BboxInstance(BaseModel):

@@ -1,12 +1,20 @@
 from typing import List
 from typing import Optional
 
-from src.schemas.base import Attribute
+from src.schemas.base import BaseAttribute
 from src.schemas.base import BaseInstance
-from src.schemas.base import MetadataBase
+from src.schemas.base import BaseMetadata as Metadata
 from src.schemas.base import Tag
+from src.schemas.base import NotEmptyStr
+
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import StrictStr
+
+
+class Attribute(BaseAttribute):
+    name: NotEmptyStr
+    group_name: NotEmptyStr = Field(alias="groupName")
 
 
 class DocumentInstance(BaseInstance):
@@ -16,7 +24,7 @@ class DocumentInstance(BaseInstance):
 
 
 class DocumentAnnotation(BaseModel):
-    metadata: MetadataBase
+    metadata: Metadata
     instances: Optional[List[DocumentInstance]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())
-    free_text: Optional[str] = Field(None, alias="freeText")
+    free_text: Optional[StrictStr] = Field(None, alias="freeText")

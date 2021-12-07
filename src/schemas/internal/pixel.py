@@ -1,27 +1,35 @@
 from typing import List
 from typing import Optional
 
-from src.schemas.base import BaseMetadata
+from src.schemas.base import BaseImageMetadata as Metadata
 from src.schemas.base import PixelColor
+from src.schemas.base import BaseAttribute
 from src.schemas.base import BaseImageAnnotationInstance
 from src.schemas.base import Tag
+from src.schemas.base import Comment
+
 from pydantic import BaseModel
+from pydantic import StrictInt
 from pydantic import Field
 
 
-class PixelMetaData(BaseMetadata):
-    is_segmented: Optional[bool] = Field(None, alias="isSegmented")
+class Attribute(BaseAttribute):
+    id: StrictInt
+    group_id: StrictInt = Field(alias="groupId")
 
 
-class PixelAnnotationPart(BaseModel):
+class AnnotationPart(BaseModel):
     color: PixelColor
 
 
-class PixelAnnotationInstance(BaseImageAnnotationInstance):
-    parts: List[PixelAnnotationPart]
+class AnnotationInstance(BaseImageAnnotationInstance):
+    parts: List[AnnotationPart]
+    class_id: StrictInt = Field(alias="classId")
+    attributes: Optional[List[Attribute]] = Field(list())
 
 
 class PixelAnnotation(BaseModel):
-    metadata: PixelMetaData
-    instances: List[PixelAnnotationInstance]
+    metadata: Metadata
+    instances: List[AnnotationInstance]
     tags: Optional[List[Tag]] = Field(list())
+    comments: Optional[List[Comment]] = Field(list())

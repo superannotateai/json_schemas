@@ -1,1 +1,5 @@
 -r requirements.txt
+pytest==6.2.4
+pytest-xdist==2.3.0
+pytest-parallel==0.1.0
+pytest-rerunfailures==10.2

@@ -3,17 +3,18 @@ from abc import ABCMeta
 from abc import abstractmethod
 from typing import Any
 from typing import Type
+from typing import Tuple
 
 from src.utils import wrap_error
-from schemas.external import PixelAnnotation as ExternalPixelAnnotation
-from schemas.external import VectorAnnotation as ExternalVectorAnnotation
-from schemas.external import VideoAnnotation as ExternalVideoAnnotation
-from schemas.external import DocumentAnnotation as ExternalDocumentAnnotation
+from src.schemas.external import PixelAnnotation as ExternalPixelAnnotation
+from src.schemas.external import VectorAnnotation as ExternalVectorAnnotation
+from src.schemas.external import VideoAnnotation as ExternalVideoAnnotation
+from src.schemas.external import DocumentAnnotation as ExternalDocumentAnnotation
 
-from schemas.internal import PixelAnnotation as InternalPixelAnnotation
-from schemas.internal import VectorAnnotation as InternalVectorAnnotation
-from schemas.internal import VideoAnnotation as InternalVideoAnnotation
-from schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
+from src.schemas.internal import PixelAnnotation as InternalPixelAnnotation
+from src.schemas.internal import VectorAnnotation as InternalVectorAnnotation
+from src.schemas.internal import VideoAnnotation as InternalVideoAnnotation
+from src.schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
 
 
 from pydantic import BaseModel
@@ -61,44 +62,44 @@ class BaseSchemaValidator(BaseValidator):
         return wrap_error(self._validation_output)
 
 
-class AnnotationValidator:
-
+class ValidatorFactory:
     @staticmethod
     def _get_default_schema():
         return type('CopyOfB', BaseSchemaValidator.__bases__, dict(BaseSchemaValidator.__dict__))
 
-    @classmethod
-    def get_pixel_validator(cls, external=True):
-        schema = cls._get_default_schema()
-        if external:
-            schema.MODEL = ExternalPixelAnnotation
-        else:
-            schema.MODEL = InternalPixelAnnotation
+    @staticmethod
+    def get_validator(model: BaseModel):
+        schema = ValidatorFactory._get_default_schema()
+        schema.MODEL = model
         return schema
 
-    @classmethod
-    def get_vector_validator(cls, external=True):
-        schema = cls._get_default_schema()
-        if external:
-            schema.MODEL = ExternalVectorAnnotation
-        else:
-            schema.MODEL = InternalVectorAnnotation
-        return schema
+    def __class_getitem__(cls, item):
+        return cls.get_validator(item)
 
-    @classmethod
-    def get_video_validator(cls, external=True):
-        schema = cls._get_default_schema()
-        if external:
-            schema.MODEL = ExternalVideoAnnotation
-        else:
-            schema.MODEL = InternalVideoAnnotation
-        return schema
 
-    @classmethod
-    def get_document_validator(cls, external=True):
-        schema = cls._get_default_schema()
-        if external:
-            schema.MODEL = ExternalDocumentAnnotation
-        else:
-            schema.MODEL = InternalDocumentAnnotation
-        return schema
+class AnnotationValidators:
+    VALIDATORS = {
+        "pixel": (
+            ValidatorFactory[ExternalPixelAnnotation],
+            ValidatorFactory[InternalPixelAnnotation]
+        ),
+        "vector": (
+            ValidatorFactory[ExternalVectorAnnotation],
+            ValidatorFactory[InternalVectorAnnotation]
+        ),
+        "video": (
+            ValidatorFactory[ExternalVideoAnnotation],
+            ValidatorFactory[InternalVideoAnnotation]
+        ),
+        "document": (
+            ValidatorFactory[ExternalDocumentAnnotation],
+            ValidatorFactory[InternalDocumentAnnotation]
+        )
+    }
+
+    def __class_getitem__(cls, item) -> Tuple[BaseModel, BaseModel]:
+        return cls.VALIDATORS.get(item)
+
+    def __getitem__(self, item) -> Tuple[BaseModel, BaseModel]:
+        return AnnotationValidator[item]
+

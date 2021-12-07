@@ -4,16 +4,21 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.schemas.base import Attribute
+from src.schemas.base import BaseAttribute
 from src.schemas.base import BaseInstance
 from src.schemas.base import BboxPoints
 from src.schemas.base import BaseMetadata
 from src.schemas.base import PointLabels
 from src.schemas.base import Tag
+from src.schemas.base import AnnotationStatusEnum
+
 from pydantic import BaseModel
+from pydantic import StrictFloat
 from pydantic import constr
 from pydantic import Field
+from pydantic import StrictBool
 from pydantic import StrictStr
+from pydantic import StrictInt
 
 
 class VideoType(str, Enum):
@@ -21,11 +26,17 @@ class VideoType(str, Enum):
     BBOX = "bbox"
 
 
+class Attribute(BaseAttribute):
+    id: StrictInt
+    group_id: StrictInt = Field(alias="groupId")
+
+
 class MetaData(BaseMetadata):
-    name: Optional[StrictStr]
-    width: Optional[int]
-    height: Optional[int]
-    duration: Optional[int]
+    width: Optional[StrictInt]
+    height: Optional[StrictInt]
+    status: Optional[AnnotationStatusEnum]
+    duration: Optional[StrictInt]
+    error: Optional[StrictBool]
 
 
 class BaseTimeStamp(BaseModel):
@@ -38,15 +49,15 @@ class BboxTimeStamp(BaseTimeStamp):
 
 
 class BaseVideoInstance(BaseInstance):
-    id: Optional[str]
+    id: Optional[StrictStr]
     type: VideoType
-    locked: Optional[bool]
-    timeline: Dict[float, BaseTimeStamp]
+    locked: Optional[StrictBool]
+    timeline: Dict[StrictFloat, BaseTimeStamp]
 
 
 class BboxInstance(BaseVideoInstance):
-    point_labels: Optional[PointLabels] = Field(None, alias="pointLabels")
-    timeline: Dict[float, BboxTimeStamp]
+    point_labels: Optional[PointLabels] = Field(alias="pointLabels")
+    timeline: Dict[StrictFloat, BboxTimeStamp]
 
 
 class EventInstance(BaseVideoInstance):

@@ -1,7 +1,7 @@
-from datetime import datetime
 from typing import Dict
 from typing import List
 from typing import Optional
+from typing import Union
 
 from pydantic import BaseModel as PyDanticBaseModel
 from pydantic import conlist
@@ -9,6 +9,7 @@ from pydantic import constr
 from pydantic import EmailStr
 from pydantic import Extra
 from pydantic import StrictInt
+from pydantic import StrictFloat
 from pydantic import StrictStr
 from pydantic import StrictBool
 from pydantic import Field
@@ -33,6 +34,8 @@ from src.schemas.constances import INVALID_DICT_MESSAGE
 
 NotEmptyStr = constr(strict=True, min_length=1)
 
+StrictNumber = Union[StrictInt, StrictFloat]
+
 
 class BaseModel(PyDanticBaseModel):
     class Config:
@@ -45,18 +48,16 @@ class BaseModel(PyDanticBaseModel):
         }
 
 
-
-
 class AxisPoint(BaseModel):
-    x: float
-    y: float
+    x: StrictNumber
+    y: StrictNumber
 
 
-class Attribute(BaseModel):
+class BaseAttribute(BaseModel):
     id: Optional[StrictInt]
-    group_id: Optional[StrictInt] = Field(None, alias="groupId")
+    group_id: Optional[StrictInt] = Field(alias="groupId")
     name: Optional[NotEmptyStr]
-    group_name: NotEmptyStr = Field(alias="groupName")
+    group_name: Optional[NotEmptyStr] = Field(alias="groupName")
 
 
 class Tag(BaseModel):
@@ -66,14 +67,14 @@ class Tag(BaseModel):
 class AttributeGroup(BaseModel):
     name: NotEmptyStr
     is_multiselect: Optional[bool] = Field(False)
-    attributes: List[Attribute]
+    attributes: List[BaseAttribute]
 
 
 class BboxPoints(BaseModel):
-    x1: float
-    x2: float
-    y1: float
-    y2: float
+    x1: StrictNumber
+    x2: StrictNumber
+    y1: StrictNumber
+    y2: StrictNumber
 
 
 class TimedBaseModel(BaseModel):
@@ -118,15 +119,19 @@ class BaseInstance(TrackableModel, TimedBaseModel):
 
 
 class BaseMetadata(BaseModel):
-    url: Optional[StrictStr]
     name: NotEmptyStr
-    last_action: Optional[LastUserAction] = Field(None, alias="lastAction")
-    width: Optional[StrictInt]
-    height: Optional[StrictInt]
-    project_id: Optional[StrictInt] = Field(None, alias="projectId")
+    url: Optional[StrictStr]
+    status: Optional[AnnotationStatusEnum]
     annotator_email: Optional[EmailStr] = Field(None, alias="annotatorEmail")
     qa_email: Optional[EmailStr] = Field(None, alias="qaEmail")
-    status: Optional[AnnotationStatusEnum]
+    last_action: Optional[LastUserAction] = Field(None, alias="lastAction")
+    project_id: Optional[StrictInt] = Field(None, alias="projectId")
+
+
+class BaseImageMetadata(BaseMetadata):
+    width: Optional[StrictInt]
+    height: Optional[StrictInt]
+    pinned: Optional[bool]
 
 
 class Correspondence(BaseModel):
@@ -135,8 +140,8 @@ class Correspondence(BaseModel):
 
 
 class Comment(TimedBaseModel, TrackableModel):
-    x: float
-    y: float
+    x: Union[StrictInt, StrictFloat]
+    y: Union[StrictInt, StrictFloat]
     resolved: Optional[StrictBool] = Field(False)
     correspondence: conlist(Correspondence, min_items=1)
 
@@ -145,7 +150,7 @@ class BaseImageAnnotationInstance(BaseInstance):
     visible: Optional[StrictBool]
     locked: Optional[StrictBool]
     probability: Optional[StrictInt] = Field(100)
-    attributes: Optional[List[Attribute]] = Field(list())
+    attributes: Optional[List[BaseAttribute]] = Field(list())
     error: Optional[StrictBool]
 
     class Config:
@@ -170,6 +175,7 @@ class PointLabels(BaseModel):
     def validate_value(cls, values):
         result = {}
         errors = []
+        validate_key, validate_value = None, None
         for key, value in values.items():
             try:
                 validate_key = constr(regex=r"^[0-9]+$", min_length=1,  strict=True).validate(key)
@@ -187,7 +193,8 @@ class PointLabels(BaseModel):
                         ValueError(POINT_LABEL_VALUE_FORMAT_ERROR_MESSAGE), str(key)
                     )
                 )
-            result.update({validate_key: validate_value})
+            if validate_key and validate_value:
+                result.update({validate_key: validate_value})
         if errors:
             raise ValidationError(errors, cls)
         return result
@@ -201,16 +208,16 @@ class PointLabels(BaseModel):
 
 class BaseVectorInstance(BaseImageAnnotationInstance):
     type: VectorAnnotationTypeEnum
-    point_labels: Optional[PointLabels] = Field(None, alias="pointLabels")
-    tracking_id: Optional[str] = Field(None, alias="trackingId")
-    group_id: Optional[int] = Field(None, alias="groupId")
+    point_labels: Optional[PointLabels] = Field(alias="pointLabels")
+    tracking_id: Optional[str] = Field(alias="trackingId")
+    group_id: Optional[int] = Field(alias="groupId")
 
-
-class Metadata(BaseMetadata):
-    name: NotEmptyStr
-    status: Optional[AnnotationStatusEnum]
-    pinned: Optional[bool]
-    is_predicted: Optional[bool] = Field(None, alias="isPredicted")
+#
+# class Metadata(BaseMetadata):
+#     name: NotEmptyStr
+#     status: Optional[AnnotationStatusEnum]
+#     pinned: Optional[StrictBool]
+#     is_predicted: Optional[StrictBool] = Field(None, alias="isPredicted")
 
 
 class PixelColor(BaseModel):

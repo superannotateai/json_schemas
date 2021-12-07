@@ -1,0 +1,1 @@
+"/Users/vaghinak.basentsyan/www/superannotate-python-sdk/tests/data_set/sample_project_vector"

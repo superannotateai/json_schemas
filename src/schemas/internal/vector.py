@@ -2,90 +2,90 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from src.schemas.base import AttributeGroup
 from src.schemas.base import BaseVectorInstance
 from src.schemas.base import BboxPoints
+from src.schemas.base import BaseAttribute
 from src.schemas.base import Comment
-from src.schemas.base import Metadata
+from src.schemas.base import BaseImageMetadata as Metadata
 from src.schemas.base import Tag
 from src.schemas.base import AxisPoint
 from src.schemas.base import VectorAnnotationTypeEnum
+from src.schemas.base import StrictNumber
+
 from pydantic import BaseModel
+from pydantic import StrictInt
+from pydantic import StrictFloat
 from pydantic import conlist
 from pydantic import Field
-from pydantic import StrictStr
 from pydantic import validate_model
 from pydantic import ValidationError
 from pydantic import validator
 
 
-class ClassesJson(BaseModel):
-    name: StrictStr
-    color: StrictStr
-    attribute_groups: List[AttributeGroup]
+class Attribute(BaseAttribute):
+    id: StrictInt
+    group_id: StrictInt = Field(alias="groupId")
 
 
-class Tags(BaseModel):
-    items: Optional[List[str]]
+class VectorInstance(BaseVectorInstance):
+    attributes: Optional[List[Attribute]] = Field(list())
 
 
-
-class Point(BaseVectorInstance, AxisPoint):
+class Point(VectorInstance, AxisPoint):
     pass
 
 
-class PolyLine(BaseVectorInstance):
-    points: List[float]
+class PolyLine(VectorInstance):
+    points: List[Union[StrictFloat, StrictInt]]
 
 
-class Polygon(BaseVectorInstance):
-    points: List[float]
+class Polygon(VectorInstance):
+    points: conlist(Union[StrictFloat, StrictInt], min_items=3)
 
 
-class Bbox(BaseVectorInstance):
+class Bbox(VectorInstance):
     points: BboxPoints
 
 
-class RotatedBoxPoints(BaseVectorInstance):
-    x1: float
-    y1: float
-    x2: float
-    y2: float
-    x3: float
-    y3: float
-    x4: float
-    y4: float
+class RotatedBoxPoints(VectorInstance):
+    x1: StrictNumber
+    y1: StrictNumber
+    x2: StrictNumber
+    y2: StrictNumber
+    x3: StrictNumber
+    y3: StrictNumber
+    x4: StrictNumber
+    y4: StrictNumber
 
 
-class RotatedBox(BaseVectorInstance):
+class RotatedBox(VectorInstance):
     points: RotatedBoxPoints
 
 
-class Ellipse(BaseVectorInstance):
-    cx: float
-    cy: float
-    rx: float
-    ry: float
-    angle: float
+class Ellipse(VectorInstance):
+    cx: StrictNumber
+    cy: StrictNumber
+    rx: StrictNumber
+    ry: StrictNumber
+    angle: StrictNumber
 
 
 class TemplatePoint(BaseModel):
-    id: int
-    x: float
-    y: float
+    id: StrictInt
+    x: StrictNumber
+    y: StrictNumber
 
 
 class TemplateConnection(BaseModel):
-    id: int
-    from_connection: int = Field(alias="from")
-    to_connection: int = Field(alias="to")
+    id: StrictInt
+    from_connection: StrictInt = Field(alias="from")
+    to_connection: StrictInt = Field(alias="to")
 
 
-class Template(BaseVectorInstance):
+class Template(VectorInstance):
     points: conlist(TemplatePoint, min_items=1)
     connections: List[TemplateConnection]
-    template_id: Optional[int] = Field(None, alias="templateId")
-    template_name: str = Field(alias="templateName")
+    template_id: StrictInt = Field(alias="templateId")
 
 
 class CuboidPoint(BaseModel):
@@ -95,7 +95,7 @@ class CuboidPoint(BaseModel):
     r2: AxisPoint
 
 
-class Cuboid(BaseVectorInstance):
+class Cuboid(VectorInstance):
     points: CuboidPoint
 
 
