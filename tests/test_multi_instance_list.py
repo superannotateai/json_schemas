@@ -9,6 +9,9 @@ from typing import Union
 from pydantic import StrictStr
 from pydantic import StrictInt
 from pydantic.error_wrappers import ValidationError
+import pytest
+
+
 
 class TestMultiInstance(TestCase):
 
@@ -41,8 +44,7 @@ class TestMultiInstance(TestCase):
             ]
         })
 
-        msg = ''
-        try:
+        with pytest.raises(ValidationError) as exec_info:
             TestBaseModel(**{
                 "data": [
                     {
@@ -55,7 +57,6 @@ class TestMultiInstance(TestCase):
                     }
                 ]
             })
-        except ValidationError as e:
-            msg = str(e)
-        self.assertEqual(msg, "1 validation error for TestBaseModel\ndata -> 1 -> integer_field\n  value is not a valid integer (type=type_error.integer)")
+        self.assertEqual(str(exec_info.value), "1 validation error for TestBaseModel\ndata -> 1 -> integer_field\n  value is not a valid integer (type=type_error.integer)")
+
 
