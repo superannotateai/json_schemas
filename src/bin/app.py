@@ -5,8 +5,6 @@ import os
 import sys
 
 WORKING_DIR = str(Path(os.path.realpath(__file__)).parents[2])
-print(WORKING_DIR)
-
 sys.path.append(WORKING_DIR)
 
 from src.bin.interface import CLIInterface

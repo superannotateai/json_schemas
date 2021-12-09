@@ -1,6 +1,7 @@
 import os
 import json
 import errno
+from pathlib import Path
 
 from src.schemas.external import PixelAnnotation as ExternalPixelAnnotation
 from src.schemas.external import VectorAnnotation as ExternalVectorAnnotation
@@ -13,10 +14,15 @@ from src.schemas.internal import VideoAnnotation as InternalVideoAnnotation
 from src.schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
 from src.exceptions import InvalidInput
 
+from src import __version__
+from src.utils import uniquify
 from src.validators import AnnotationValidators
 
 
 class CLIInterface:
+    """
+    This is to validate Pixel, Vector, Image and Document annotations.
+    """
     DEFAULT_PATH = "schemas/"
     EXTERNAL_SCHEMAS = (
         ExternalPixelAnnotation, ExternalVectorAnnotation, ExternalDocumentAnnotation, ExternalVideoAnnotation
@@ -34,33 +40,36 @@ class CLIInterface:
                 if exc.errno != errno.EEXIST:
                     raise
 
-    def generate_schemas(self, path: str = None, indent: int = 2):
-        path = f"{path}" if path else self.DEFAULT_PATH
-        self._create_folder(path)
-        for schema in self.INTERNAL_SCHEMAS:
-            schema_path = f"{path}/internal_{schema.__name__}.json"
-            with open(schema_path, "w") as f:
-                f.write(schema.schema_json(indent=indent))
-        for schema in self.INTERNAL_SCHEMAS:
-            schema_path = f"{path}/external_{schema.__name__}.json"
-            with open(schema_path, "w") as f:
-                f.write(schema.schema_json(indent=indent))
-
-    def validate(self, *paths, project_type, internal=False, verbose=False, report_path=None):
-        validators = AnnotationValidators[project_type.lower()]
-        if not validators:
+    @staticmethod
+    def validate(*paths, project_type, internal=False, verbose=False, report_path=None):
+        if not paths:
+            raise InvalidInput("Please provide paths.")
+        if project_type not in AnnotationValidators.VALIDATORS.keys():
             raise InvalidInput(
                 f"Invalid project type, valid types are: {', '.join(AnnotationValidators.VALIDATORS.keys())}"
             )
-        external_validator, internal_validator = validators
-        validator = internal_validator if internal else external_validator
+
+        validator_class = AnnotationValidators.get_validator(project_type, internal)
+        validation_result = []
         for path in paths:
-            with open(path, "r") as file:
-                data = json.load(file)
-                if not validator(data).is_valid():
-                    print(validator.generate_report)
+            if Path(path).is_file():
+                with open(path, "r") as file:
+                    data = json.load(file)
+                    validator = validator_class(data)
+                    if not validator.is_valid():
+                        report = validator.generate_report()
+                        if verbose:
+                            print(f"{'-'* 4}{path}\n{report}")
+                        if report_path:
+                            with open(f"{report_path}/{uniquify(Path(path).name)}") as validation_report:
+                                validation_report.write(report)
+                        else:
+                            validation_result.append({path: False})
+            else:
+                print(f"Skip {path}")
+        if not verbose:
+            print(validation_result)
 
-
-
-
-
+    @staticmethod
+    def version():
+        return f"Version : {__version__}"

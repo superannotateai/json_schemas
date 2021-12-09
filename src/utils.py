@@ -1,5 +1,4 @@
 import os
-
 from collections import defaultdict
 
 from pydantic import ValidationError
@@ -23,7 +22,7 @@ def wrap_error(e: ValidationError) -> str:
             f"[{i}]" if isinstance(i, int) else f".{i}" for i in errors_list[1::]
         ]
         error_messages["".join(errors_list)].append(error["msg"])
-    texts = ["\n"]
+    texts = []
     for field, text in error_messages.items():
         texts.append(
             "{} {}{}".format(
@@ -33,3 +32,14 @@ def wrap_error(e: ValidationError) -> str:
             )
         )
     return "\n".join(texts)
+
+
+def uniquify(path):
+    filename, extension = os.path.splitext(path)
+    counter = 1
+
+    while os.path.exists(path):
+        path = filename + " (" + str(counter) + ")" + extension
+        counter += 1
+
+    return path
