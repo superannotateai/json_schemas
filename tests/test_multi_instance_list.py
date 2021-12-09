@@ -60,3 +60,19 @@ class TestMultiInstance(TestCase):
         self.assertEqual(str(exec_info.value), "1 validation error for TestBaseModel\ndata -> 1 -> integer_field\n  value is not a valid integer (type=type_error.integer)")
 
 
+        with pytest.raises(ValidationError) as exec_info:
+            TestBaseModel(**{
+                "data": [
+                    {
+                        "type": "not_exist",
+                        "string_field": "3"
+                    },
+                    {
+                        "type": "not_exist",
+                        "integer_field": "3"
+                    }
+                ]
+            })
+        self.assertEqual(str(exec_info.value), "2 validation errors for TestBaseModel\ndata -> 0\n  Incorrect type: not_exist (type=type_error)\ndata -> 1\n  Incorrect type: not_exist (type=type_error)")
+
+
