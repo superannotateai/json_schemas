@@ -29,7 +29,7 @@ class Attribute(BaseAttribute):
     group_name: NotEmptyStr = Field(alias="groupName")
 
 
-class VectorInstance(VectorInstance):
+class VectorInstance(BaseVectorInstance):
     attributes: Optional[List[Attribute]] = Field(list())
 
 

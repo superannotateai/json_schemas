@@ -3,9 +3,9 @@ from abc import ABCMeta
 from abc import abstractmethod
 from typing import Any
 from typing import Type
-from typing import Tuple
 
 from src.utils import wrap_error
+from src.exceptions import AppException
 from src.schemas.external import PixelAnnotation as ExternalPixelAnnotation
 from src.schemas.external import VectorAnnotation as ExternalVectorAnnotation
 from src.schemas.external import VideoAnnotation as ExternalVideoAnnotation
@@ -97,9 +97,8 @@ class AnnotationValidators:
         )
     }
 
-    def __class_getitem__(cls, item) -> Tuple[BaseModel, BaseModel]:
-        return cls.VALIDATORS.get(item)
-
-    def __getitem__(self, item) -> Tuple[BaseModel, BaseModel]:
-        return AnnotationValidator[item]
+    @classmethod
+    def get_validator(cls, project_type: str, internal=False):
+        idx = 1 if internal else 0
+        return cls.VALIDATORS[project_type][idx]
 
