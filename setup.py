@@ -9,7 +9,7 @@ setup(
     name='superannotate_schemas',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='1.0.0b6',
+    version='1.0.0b7',
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     description='SuperAnnotate JSON Schemas',
