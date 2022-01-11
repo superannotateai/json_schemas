@@ -47,7 +47,7 @@ class Bbox(VectorInstance):
     points: BboxPoints
 
 
-class RotatedBoxPoints(VectorInstance):
+class RotatedBoxPoints(BaseModel):
     x1: StrictNumber
     y1: StrictNumber
     x2: StrictNumber
