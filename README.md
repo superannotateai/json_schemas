@@ -8,7 +8,6 @@ This project is SuperAnnotate annotations JSON schema generator.
 ## Setup
 ```
 $ pip install superannotate_schemas
-$ superannotate_schemas generate_schemas {path}
 ```
 
 ## Example
