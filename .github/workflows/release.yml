@@ -2,14 +2,14 @@ name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
 
 on:
   release:
-    types: [released] 
+    types: [prereleased,released] 
     
 jobs:
   build-n-publish:
     name: Build and publish Python 🐍 distributions 📦 to PyPI and TestPyPI
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
