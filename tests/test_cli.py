@@ -2,6 +2,7 @@ from subprocess import Popen, PIPE
 import os
 from os.path import dirname
 from tests import LIB_PATH
+from pydantic import EmailStr
 
 from unittest import TestCase
 
@@ -69,3 +70,16 @@ class TestCLI(TestCase):
         out, _ = p.communicate()
         self.assertIsNotNone(out)
 
+
+    def test_(self):
+        # from email_validator import validate_email
+        # import time
+        # s = time.time()
+        # for i in range(10):
+        #     try:
+        #         validate_email("vaghinak@superannotate.com", check_deliverability=True)
+        #     except Exception:
+        #         pass
+        # print(time.time() - s)
+        import datetime
+        print((datetime.datetime.now(datetime.timezone.utc)).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + 'Z')
