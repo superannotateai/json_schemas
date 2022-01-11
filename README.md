@@ -1,22 +1,20 @@
 ## Annotation Json Schemas
 * [General info](#general-info)
-* [Technologies](#technologies)
 * [Setup](#setup)
 
 ## General info
 This project is SuperAnnotate annotations JSON schema generator.
 	
-## Technologies
-Project is created with:
-* Python 3.6 +
-* Pydantic: 1.8 +
-
-	
 ## Setup
-To run this projectnpm:
+```
+$ pip install superannotate_schemas
+$ superannotate_schemas generate_schemas {path}
+```
 
+## Example
 ```
-$ cd ../JsonSchemas
-$ pip install -r requirements.txt
-$ python main.py generate_schemas {path}
+$ superannotate_schema validate <annotation_path>
+$ superannotate_schema validate <annotation_path>, <annotation_path>
 ```
+- To print validation report set --verbose True
+- To store reports in the file set --report-path
