@@ -9,7 +9,7 @@ setup(
     name='superannotate_schemas',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version='1.0',
+    version='1.0.0',
     package_dir={"": "src"},
     description='SuperAnnotate JSON Schemas',
     author='Vaghinak Basentsyan',
