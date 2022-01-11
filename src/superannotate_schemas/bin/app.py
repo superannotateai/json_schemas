@@ -1,6 +1,6 @@
 import fire
 
-from bin.interface import CLIInterface
+from superannotate_schemas.bin.interface import CLIInterface
 
 
 def main():

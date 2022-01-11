@@ -3,8 +3,8 @@ import json
 import errno
 from pathlib import Path
 
-from schemas.external import PixelAnnotation as ExternalPixelAnnotation
-from schemas.external import VectorAnnotation as ExternalVectorAnnotation
+from superannotate_schemas.schemas.external import PixelAnnotation as ExternalPixelAnnotation
+from superannotate_schemas.schemas.external import VectorAnnotation as ExternalVectorAnnotation
 from superannotate_schemas.schemas.external import VideoAnnotation as ExternalVideoAnnotation
 from superannotate_schemas.schemas.external import DocumentAnnotation as ExternalDocumentAnnotation
 
@@ -14,7 +14,7 @@ from superannotate_schemas.schemas.internal import VideoAnnotation as InternalVi
 from superannotate_schemas.schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
 from superannotate_schemas.exceptions import InvalidInput
 
-from src import __version__
+from superannotate_schemas import __version__
 from superannotate_schemas.utils import uniquify
 from superannotate_schemas.validators import AnnotationValidators
 

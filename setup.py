@@ -1,5 +1,5 @@
-from setuptools import setup
 from pathlib import Path
+from setuptools import find_packages, setup
 
 this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
@@ -11,6 +11,7 @@ setup(
     long_description_content_type='text/markdown',
     version='1.0.0',
     package_dir={"": "src"},
+    packages=find_packages(where="src"),
     description='SuperAnnotate JSON Schemas',
     author='Vaghinak Basentsyan',
     author_email='vaghinak@superannotate.con',
@@ -18,6 +19,6 @@ setup(
     license='MIT',
     description_file="README.md",
     entry_points={
-            'console_scripts': ['superannotate_schemas = bin.app:main']
+            'console_scripts': ['superannotate_schemas = superannotate_schemas.bin.app:main']
         },
       )
