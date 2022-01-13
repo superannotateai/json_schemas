@@ -68,7 +68,7 @@ class ValidatorFactory:
         return type('CopyOfB', BaseSchemaValidator.__bases__, dict(BaseSchemaValidator.__dict__))
 
     @staticmethod
-    def get_validator(model: BaseModel):
+    def get_validator(model: Any):
         schema = ValidatorFactory._get_default_schema()
         schema.MODEL = model
         return schema
@@ -80,25 +80,25 @@ class ValidatorFactory:
 class AnnotationValidators:
     VALIDATORS = {
         "pixel": (
-            ValidatorFactory[ExternalPixelAnnotation],
-            ValidatorFactory[InternalPixelAnnotation]
+            ValidatorFactory.get_validator(ExternalPixelAnnotation),
+            ValidatorFactory.get_validator(InternalPixelAnnotation)
         ),
         "vector": (
-            ValidatorFactory[ExternalVectorAnnotation],
-            ValidatorFactory[InternalVectorAnnotation]
+            ValidatorFactory.get_validator(ExternalVectorAnnotation),
+            ValidatorFactory.get_validator(InternalVectorAnnotation)
         ),
         "video": (
-            ValidatorFactory[ExternalVideoAnnotation],
-            ValidatorFactory[InternalVideoAnnotation]
+            ValidatorFactory.get_validator(ExternalVideoAnnotation),
+            ValidatorFactory.get_validator(InternalVideoAnnotation)
         ),
         "document": (
-            ValidatorFactory[ExternalDocumentAnnotation],
-            ValidatorFactory[InternalDocumentAnnotation]
+            ValidatorFactory.get_validator(ExternalDocumentAnnotation),
+            ValidatorFactory.get_validator(InternalDocumentAnnotation)
         )
     }
 
     @classmethod
     def get_validator(cls, project_type: str, internal=False):
         idx = 1 if internal else 0
-        return cls.VALIDATORS[project_type][idx]
+        return cls.VALIDATORS[project_type.lower()][idx]
 

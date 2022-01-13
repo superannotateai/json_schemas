@@ -12,14 +12,16 @@ from superannotate_schemas.schemas.base import BaseMetadata
 from superannotate_schemas.schemas.base import NotEmptyStr
 from superannotate_schemas.schemas.base import PointLabels
 from superannotate_schemas.schemas.base import Tag
+from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 
 from pydantic import BaseModel
 from pydantic import StrictBool
 from pydantic import conlist
+from pydantic import ValidationError
 from pydantic import Field
 from pydantic import StrictInt
 from pydantic import StrictStr
-
+from pydantic.error_wrappers import ErrorWrapper
 
 class Attribute(BaseAttribute):
     name: NotEmptyStr
@@ -107,7 +109,50 @@ ANNOTATION_TYPES = {
 }
 
 
+class AnnotationInstance(BaseModel):
+    __root__: Union[
+        BboxInstance, EventInstance
+    ]
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.return_action
+
+    @classmethod
+    def return_action(cls, values):
+
+        try:
+            meta = values.get("meta")
+            if not meta:
+                raise ValidationError(
+                    [ErrorWrapper(ValueError("field required"), "meta")], cls
+                )
+            try:
+                instance_type = meta["type"]
+            except KeyError:
+                raise ValidationError(
+                    [ErrorWrapper(ValueError("field required"), "meta.type")], cls
+                )
+            return ANNOTATION_TYPES[instance_type](**values)
+        except KeyError:
+            raise ValidationError(
+                [
+                    ErrorWrapper(
+                        ValueError(
+                            f"invalid type, valid types are {', '.join(ANNOTATION_TYPES.keys())}"
+                        ),
+                        "meta.type",
+                    )
+                ],
+                cls,
+            )
+        except TypeError as e:
+            raise ValidationError(
+                [ErrorWrapper(ValueError(INVALID_DICT_MESSAGE), "meta")], cls
+            )
+
+
 class VideoAnnotation(BaseModel):
     metadata: MetaData
-    instances: Optional[List[Union[EventInstance, BboxInstance]]] = Field(list())
+    instances: Optional[List[AnnotationInstance]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())

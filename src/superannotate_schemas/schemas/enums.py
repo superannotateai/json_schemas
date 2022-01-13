@@ -15,7 +15,7 @@ class VectorAnnotationTypeEnum(str, Enum):
 class CreationTypeEnum(str, Enum):
     MANUAL = "Manual"
     PREDICTION = "Prediction"
-    PRE_ANNOTATION = "Pre-annotation"
+    PRE_ANNOTATION = "Preannotation"
 
 
 class AnnotationStatusEnum(str, Enum):
@@ -33,5 +33,8 @@ class BaseRoleEnum(str, Enum):
     QA = "QA"
 
 
-class ImageRoleEnum(str, Enum):
+class BaseImageRoleEnum(str, Enum):
     CUSTOMER = "Customer"
+    ADMIN = "Admin"
+    ANNOTATOR = "Annotator"
+    QA = "QA"
