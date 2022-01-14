@@ -33,3 +33,8 @@ jobs:
       uses: pypa/gh-action-pypi-publish@master
       with:
         password: ${{ secrets.PYPI_PASSWORD }}
+    - uses: rhysd/changelog-from-release/action@v2
+      with:
+        file: CHANGELOG.md
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    
