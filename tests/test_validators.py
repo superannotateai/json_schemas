@@ -1974,3 +1974,79 @@ class TestSchemas(TestCase):
             self.assertFalse(validator.is_valid())
             self.assertEqual(len(validator.generate_report()),416)
 
+    def test_validate_vector_empty_annotation(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/vector_empty.json", "w") as vector_empty:
+                vector_empty.write(
+                    '''
+                {
+                   "metadata":{
+                      "lastAction":{
+                         "email":"test@test.com",
+                         "timestamp":1641910273710
+                      },
+                      "width":480,
+                      "height":270,
+                      "name":"1 copy_001.jpg",
+                      "projectId":181302,
+                      "isPredicted":false,
+                      "status":"Completed",
+                      "pinned":false,
+                      "annotatorEmail":null,
+                      "qaEmail":null
+                   },
+                   "comments":[
+
+                   ],
+                   "tags":[
+
+                   ],
+                   "instances":[
+                      {
+                         "type":"rbbox",
+                         "classId":901659,
+                         "probability":100,
+                         "points":{
+                            "x1":213.57,
+                            "y1":74.08,
+                            "x2":275.65,
+                            "y2":128.66,
+                            "x3":238.51,
+                            "y3":170.92,
+                            "x4":176.43,
+                            "y4":116.34
+                         },
+                         "groupId":0,
+                         "pointLabels":{
+
+                         },
+                         "locked":false,
+                         "visible":true,
+                         "attributes":[
+
+                         ],
+                         "trackingId":null,
+                         "error":null,
+                         "createdAt":"2022-01-11T14:11:30.772Z",
+                         "createdBy":{
+                            "email":"test@test.com",
+                            "role":"Admin"
+                         },
+                         "creationType":"Manual",
+                         "updatedAt":"2022-01-11T14:11:35.852Z",
+                         "updatedBy":{
+                            "email":"test@test.com",
+                            "role":"Admin"
+                         },
+                         "className":"df"
+                      }
+                   ]
+                }
+                    '''
+                )
+
+
+            with open(f"{tmpdir_name}/vector_empty.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            self.assertTrue(validator.is_valid())
