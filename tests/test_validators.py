@@ -58,17 +58,74 @@ class TestSchemas(TestCase):
             self.assertTrue(validator.is_valid())
 
 
+    def test_validate_annotation_with_wrong_bbox(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/vector.json", "w") as vector_json:
+                vector_json.write(
+                    """
+                                        {
+                      "metadata": {
+                        "name": "example_image_1.jpg",
+                        "width": 1024,
+                        "height": 683,
+                        "status": "Completed",
+                        "pinned": false,
+                        "isPredicted": null,
+                        "projectId": null,
+                        "annotatorEmail": null,
+                        "qaEmail": null
+                      },
+                      "instances": [
+                        {
+                          "type": "bbox",
+                          "classId": 72274,
+                          "probability": 100,
+                          "points": {
+                            
+                            "x2": 465.23,
+                            "y1": 341.5,
+                            "y2": 357.09
+                          },
+                          "groupId": 0,
+                          "pointLabels": {},
+                          "locked": false,
+                          "visible": false,
+                          "attributes": [
+                            {
+                              "id": 117845,
+                              "groupId": 28230,
+                              "name": "2",
+                              "groupName": "Num doors"
+                            }
+                          ],
+                          "trackingId": "aaa97f80c9e54a5f2dc2e920fc92e5033d9af45b",
+                          "error": null,
+                          "createdAt": null,
+                          "createdBy": null,
+                          "creationType": null,
+                          "updatedAt": null,
+                          "updatedBy": null,
+                          "className": "Personal vehicle"
+                        }
+                      ]
+                    }
 
-    # @patch('builtins.print')
-    # def test_validate_annotation_with_wrong_bbox(self, mock_print):
-    #     with tempfile.TemporaryDirectory() as tmpdir_name:
-    #         with open(f"{tmpdir_name}/vector.json", "w") as vector_json:
-    #             vector_json.write(self.ANNOTATION)
-    #         sa.validate_annotations("Vector", os.path.join(self.vector_folder_path, f"{tmpdir_name}/vector.json"))
-    #         mock_print.assert_any_call(
-    #             "instances[0].type                                invalid type, valid types are bbox, "
-    #             "template, cuboid, polygon, point, polyline, ellipse, rbbox"
-    #         )
+                    """
+
+
+                )
+
+            with open(f"{tmpdir_name}/vector.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(len(validator.generate_report()), 63)
+
+            # sa.validate_annotations("Vector", os.path.join(self.vector_folder_path, f"{tmpdir_name}/vector.json"))
+            # mock_print.assert_any_call(
+            #     "instances[0].type                                invalid type, valid types are bbox, "
+            #     "template, cuboid, polygon, point, polyline, ellipse, rbbox"
+            # )
 
     def test_validate_document_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -99,9 +156,6 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertTrue(validator.is_valid())
-
-            # self.assertTrue(
-            #     sa.validate_annotations("Document", os.path.join(self.vector_folder_path, f"{tmpdir_name}/doc.json")))
 
     def test_validate_pixel_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -137,9 +191,6 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("pixel")(data)
             self.assertTrue(validator.is_valid())
 
-            # self.assertTrue(
-            #     sa.validate_annotations("Pixel", os.path.join(self.vector_folder_path, f"{tmpdir_name}/pixel.json")))
-
     def test_validate_video_export_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/video_export.json", "w") as video_export:
@@ -172,8 +223,6 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("video")(data)
             self.assertTrue(validator.is_valid())
-            # self.assertTrue(sa.validate_annotations("Video", os.path.join(self.vector_folder_path,
-            #                                                               f"{tmpdir_name}/video_export.json")))
 
     def test_validate_vector_empty_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -207,11 +256,9 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("video")(data)
             self.assertTrue(validator.is_valid())
-            # self.assertTrue(sa.validate_annotations("Vector", os.path.join(self.vector_folder_path,
-            #                                                                f"{tmpdir_name}/vector_empty.json")))
 
-    @patch('builtins.print')
-    def test_validate_error_message_format(self, mock_print):
+
+    def test_validate_error_message_format(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/test_validate_error_message_format.json",
                       "w") as test_validate_error_message_format:
@@ -228,10 +275,6 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
             self.assertEqual(validator.generate_report(),"metadata.name                                    field required")
-
-            # sa.validate_annotations("Vector", os.path.join(self.vector_folder_path,
-            #                                                f"{tmpdir_name}/test_validate_error_message_format.json"))
-            # mock_print.assert_any_call("metadata.name                                    field required")
 
     @patch('builtins.print')
     def test_validate_document_annotation_wrong_class_id(self, mock_print):
@@ -284,10 +327,6 @@ class TestSchemas(TestCase):
             self.assertEqual(validator.generate_report(),
                              "instances[0].classId                             value is not a valid integer")
 
-            # sa.validate_annotations("Document", os.path.join(self.vector_folder_path,
-            #                                                  f"{tmpdir_name}/test_validate_document_annotation_wrong_class_id.json"))
-            # mock_print.assert_any_call("instances[0].classId                             value is not a valid integer")
-
     def test_validate_document_annotation_with_null_created_at(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/test_validate_document_annotation_with_null_created_at.json",
@@ -335,8 +374,6 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertTrue(validator.is_valid())
-            # self.assertTrue(sa.validate_annotations("Document", os.path.join(self.vector_folder_path,
-            #                                                                  f"{tmpdir_name}/test_validate_document_annotation_with_null_created_at.json")))
 
     @patch('builtins.print')
     def test_validate_vector_instance_type_and_attr_annotation(self, mock_print):
@@ -405,8 +442,6 @@ class TestSchemas(TestCase):
             self.assertFalse(validator.is_valid())
             self.assertEqual(validator.generate_report(),
                              "instances[0].type                                field required")
-            # sa.validate_annotations("Vector", os.path.join(self.vector_folder_path, f"{tmpdir_name}/{json_name}"))
-            # mock_print.assert_any_call("instances[0].type                                field required")
 
     @patch('builtins.print')
     def test_validate_vector_invalid_instance_type_and_attr_annotation(self, mock_print):
@@ -474,19 +509,8 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
+            self.assertEqual(len(validator.generate_report()),143)
 
-            # TODO: assert messgae
-            # self.assertEqual(validator.generate_report(),
-            #                  "instances[0].type                                field required")
-            # sa.validate_annotations(
-            #     "Vector",
-            #     os.path.join(self.vector_folder_path,
-            #                  f"{tmpdir_name}/test_validate_vector_invalid_instace_type_and_attr_annotation.json")
-            # )
-            # mock_print.assert_any_call(
-            #     "instances[0].type                                invalid type, valid types are bbox, "
-            #     "template, cuboid, polygon, point, polyline, ellipse, rbbox"
-            # )
 
     @patch('builtins.print')
     def test_validate_video_invalid_instance_type_and_attr_annotation(self, mock_print):
@@ -804,12 +828,6 @@ class TestSchemas(TestCase):
             self.assertEqual(validator.generate_report(),
                              "instances[2].meta.type                           invalid type, valid types are bbox, event")
 
-            # sa.validate_annotations("Video", os.path.join(self.vector_folder_path,
-            #                                               f"{tmpdir_name}/test_validate_video_invalid_instace_type_and_attr_annotation.json"))
-            # mock_print.assert_any_call(
-            #     "instances[2].meta.type                           invalid type, valid types are bbox, event"
-            # )
-
     @patch('builtins.print')
     def test_validate_video_invalid_instance_without_type_and_attr_annotation(self, mock_print):
         json_name = "test.json"
@@ -1117,10 +1135,13 @@ class TestSchemas(TestCase):
                 }
                 '''
                 )
-            sa.validate_annotations("Video", os.path.join(self.vector_folder_path, f"{tmpdir_name}/{json_name}"))
-            mock_print.assert_any_call(
-                "instances[2].meta.type                           field required"
-            )
+
+            with open(f"{tmpdir_name}/{json_name}", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("video")(data)
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(validator.generate_report(),
+                             "instances[2].meta.type                           field required")
 
     @patch('builtins.print')
     def test_validate_vector_template_polygon_polyline_min_annotation(self, mock_print):
@@ -1271,16 +1292,15 @@ class TestSchemas(TestCase):
                         }
                 '''
                 )
-            sa.validate_annotations("Vector", os.path.join(self.vector_folder_path,
-                                                           f"{tmpdir_name}/{json_name}"))
-            mock_print.assert_any_call(
-                "metadata.width                                   value is not a valid integer\n"
-                "instances[0].points                              ensure this value has at least 1 items\n"
-                "instances[1].points                              ensure this value has at least 3 items"
-            )
 
-    @patch('builtins.print')
-    def test_validate_video_point_labels(self, mock_print):
+            with open(f"{tmpdir_name}/{json_name}", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(len(validator.generate_report()),253)
+
+
+    def test_validate_video_point_labels(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/test_validate_video_point_labels.json",
                       "w") as test_validate_video_point_labels:
@@ -1586,14 +1606,15 @@ class TestSchemas(TestCase):
                 '''
                 )
 
-            sa.validate_annotations("Video", os.path.join(self.vector_folder_path,
-                                                          f"{tmpdir_name}/test_validate_video_point_labels.json"))
-            mock_print.assert_any_call(
-                "instances[0].meta.pointLabels                    value is not a valid dict",
-            )
+            with open(f"{tmpdir_name}/test_validate_video_point_labels.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("video")(data)
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(validator.generate_report(),
+                             "instances[0].meta.pointLabels                    value is not a valid dict")
 
-    @patch('builtins.print')
-    def test_validate_video_point_labels_bad_keys(self, mock_print):
+
+    def test_validate_video_point_labels_bad_keys(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/test_validate_video_point_labels_bad_keys.json",
                       "w") as test_validate_video_point_labels_bad_keys:
@@ -1946,13 +1967,10 @@ class TestSchemas(TestCase):
                 }
                 '''
                 )
-            sa.validate_annotations("Video", os.path.join(self.vector_folder_path,
-                                                          f"{tmpdir_name}/test_validate_video_point_labels_bad_keys.json"))
-            mock_print.assert_any_call(
-                "instances[0].meta.pointLabels                    str type expected\n"
-                "instances[2].parameters[0].timestamps[2].timestamp value is not a valid integer\n"
-                "instances[3].meta                                field required\n"
-                "instances[4].meta                                value is not a valid dict\n"
-                "instances[5].meta                                field required\n"
-                "tags[0]                                          str type expected"
-            )
+
+            with open(f"{tmpdir_name}/test_validate_video_point_labels_bad_keys.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("video")(data)
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(len(validator.generate_report()),416)
+
