@@ -22,7 +22,7 @@ from pydantic.color import Color
 from pydantic.color import ColorType
 
 from superannotate_schemas.schemas.enums import CreationTypeEnum
-from superannotate_schemas.schemas.enums import ImageRoleEnum
+from superannotate_schemas.schemas.enums import BaseImageRoleEnum
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 from superannotate_schemas.schemas.enums import AnnotationStatusEnum
 from superannotate_schemas.schemas.constances import DATE_REGEX
@@ -93,7 +93,7 @@ class TimedBaseModel(BaseModel):
 
 class UserAction(BaseModel):
     email: EmailStr
-    role: ImageRoleEnum
+    role: BaseImageRoleEnum
 
 
 class TrackableModel(BaseModel):
