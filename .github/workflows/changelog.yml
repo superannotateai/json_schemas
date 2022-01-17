@@ -1,17 +1,28 @@
-name: On release published
+name: "Update Changelog"
+
 on:
   release:
     types: [released]
 
 jobs:
-  changelog:
-    name: Update changelog
+  update:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
         with:
-          ref: master
-      - uses: rhysd/changelog-from-release/action@v2
+          ref: main
+
+      - name: Update Changelog
+        uses: stefanzweifel/changelog-updater-action@v1
         with:
-          file: CHANGELOG.md
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release-notes: ${{ github.event.release.body }}
+          latest-version: ${{ github.event.release.name }}
+
+      - name: Commit updated CHANGELOG
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: main
+          commit_message: Update CHANGELOG
+          file_pattern: CHANGELOG.md
