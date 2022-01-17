@@ -1,7 +1,7 @@
 on:
   release:
-    type: published
-
+    types: [released]
+    
 jobs:
   comment:
     runs-on: ubuntu-latest
