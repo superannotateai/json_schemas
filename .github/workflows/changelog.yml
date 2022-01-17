@@ -1,40 +1,27 @@
+name: changerelease
 on:
-  release:
-    types: [released]
-    
+  workflow_dispatch: {}
+  push:
+    paths: [CHANGELOG.md]
+    branches: [master]
+    tags: ["*"]
+
 jobs:
-  comment:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: "3.8"
-      - name: Update version
-        id: version
-        run: |
-          echo "GITHUB_REF is a tag you set for the release"
-          echo "Your GitHub ref: ${GITHUB_REF}"
-          VERSION=`echo "${GITHUB_REF}" | cut -f 3 -d "/"`
-          echo "Preparing version ${VERSION}"
-          echo "__version__ = \"${VERSION}\"" > __version__.py
-          echo "##[set-output name=version;]$(echo ${VERSION})"
-      - uses: vemel/update-changelog@0.0.1
-        id: changelog
-        with:
-          version: ${{ steps.version.outputs.version }}
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v2
-        with:
-          commit-message: Release ${{ steps.version.outputs.version }}
-          labels: release, bot
-          title: "Release ${{ steps.version.outputs.version }}"
-          body: |
-            # Release ${{ steps.version.outputs.version }}
+    - uses: actions/checkout@v2
 
-            Merge this PR to update your version and changelog!
+    # Convert to markdown first
+    # https://github.com/pandoc/pandoc-action-example
+    - uses: docker://pandoc/core:2.14
+      with:
+        args: "CHANGELOG.rst -f rst -t markdown -o CR_CHANGELOG.md"
 
-            ## Included Pull Requests
-
-            ${{ steps.changelog.outputs.pulls_list_md }}
+    - uses: dropseed/changerelease@v1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # optional
+        tag_prefix: v
+        changelog: CR_CHANGELOG.md
+        remote_changelog: false
