@@ -7,8 +7,8 @@ from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageAnnotationInstance
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import Comment
+from superannotate_schemas.schemas.base import BaseModel
 
-from pydantic import BaseModel
 from pydantic import StrictInt
 from pydantic import Field
 

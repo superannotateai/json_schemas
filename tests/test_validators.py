@@ -2050,3 +2050,163 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertTrue(validator.is_valid())
+
+
+    def test_validate_pixel_annotation_instance_without_class_name(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/pixel.json", "w") as pix_json:
+                pix_json.write(
+                    '''
+                    {
+                      "metadata": {
+                        "name": "example_image_1.jpg",
+                        "lastAction": {
+                          "email": "shab.prog@gmail.com",
+                          "timestamp": 1637306216
+                        }
+                      },
+                      "instances": [
+                        {
+                          "creationType": "Preannotation",
+                          "classId": 887060,
+                          "visible": true,
+                          "probability": 100,
+                          "attributes": [
+                            {
+                              "id": 1223660,
+                              "groupId": 358141,
+                              "name": "no",
+                              "groupName": "small"
+                            }
+                          ],
+                          "parts": [
+                            {
+                              "color": "#000447"
+                            }
+                          ]
+                        }
+                      ],
+                      "tags": [],
+                      "comments": []
+                    }
+                    '''
+                )
+
+            with open(f"{tmpdir_name}/pixel.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("pixel")(data)
+            self.assertTrue(validator.is_valid())
+
+
+    def test_validate_document_wrong_meta_data(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            path = f"{tmpdir_name}/test_validate_document_annotation_without_classname.json"
+            with open(path, "w") as test_validate_document_annotation_without_classname:
+                test_validate_document_annotation_without_classname.write(
+                    '''
+                    {
+                        "metadata": {
+                            "name": "text_file_example_1",
+                            "status": "NotStarted",
+                            "width": ["fsda" ,1],
+                            "height" : ["dfsadfsdf"],
+                            "is_pinned": "afdasdfadf",
+                            "url": "https://sa-public-files.s3.us-west-2.amazonaws.com/Text+project/text_file_example_1.txt",
+                            "projectId": 167826,
+                            "annotatorEmail": null,
+                            "qaEmail": null,
+                            "lastAction": {
+                                "email": "some.email@gmail.com",
+                                "timestamp": 1636620976450
+                            }
+                        },
+                        "instances": [],
+                        "tags": [],
+                        "freeText": ""
+                    }
+                    '''
+                )
+            with open(path, "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            validator.is_valid()
+            print(validator.generate_report())
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(len(validator.generate_report()), 155)
+
+    def test_validate_vector_empty_annotation_bad_role(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/vector_empty.json", "w") as vector_empty:
+                vector_empty.write(
+                    '''
+                {
+                   "metadata":{
+                      "lastAction":{
+                         "email":"test@test.com",
+                         "timestamp":1641910273710
+                      },
+                      "width":480,
+                      "height":270,
+                      "name":"1 copy_001.jpg",
+                      "projectId":181302,
+                      "isPredicted":false,
+                      "status":"Completed",
+                      "pinned":false,
+                      "annotatorEmail":null,
+                      "qaEmail":null
+                   },
+                   "comments":[
+
+                   ],
+                   "tags":[
+
+                   ],
+                   "instances":[
+                      {
+                         "type":"rbbox",
+                         "classId":901659,
+                         "probability":100,
+                         "points":{
+                            "x1":213.57,
+                            "y1":74.08,
+                            "x2":275.65,
+                            "y2":128.66,
+                            "x3":238.51,
+                            "y3":170.92,
+                            "x4":176.43,
+                            "y4":116.34
+                         },
+                         "groupId":0,
+                         "pointLabels":{
+
+                         },
+                         "locked":false,
+                         "visible":true,
+                         "attributes":[
+
+                         ],
+                         "trackingId":null,
+                         "error":null,
+                         "createdAt":"2022-01-11T14:11:30.772Z",
+                         "createdBy":{
+                            "email":"test@test.com",
+                            "role":"bad_role"
+                         },
+                         "creationType":"Manual",
+                         "updatedAt":"2022-01-11T14:11:35.852Z",
+                         "updatedBy":{
+                            "email":"test@test.com",
+                            "role":"Admin"
+                         },
+                         "className":"df"
+                      }
+                   ]
+                }
+                    '''
+                )
+
+            with open(f"{tmpdir_name}/vector_empty.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            self.assertFalse(validator.is_valid())
+            self.assertEqual(len(validator.generate_report()), 113)

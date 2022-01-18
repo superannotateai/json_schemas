@@ -12,8 +12,8 @@ from superannotate_schemas.schemas.base import AxisPoint
 from superannotate_schemas.schemas.base import VectorAnnotationTypeEnum
 from superannotate_schemas.schemas.base import StrictNumber
 from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
+from superannotate_schemas.schemas.base import BaseModel
 
-from pydantic import BaseModel
 from pydantic import StrictInt
 from pydantic import StrictFloat
 from pydantic import conlist

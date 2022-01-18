@@ -12,7 +12,7 @@ from superannotate_schemas.schemas.base import PointLabels
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import AnnotationStatusEnum
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import StrictFloat
 from pydantic import constr
 from pydantic import Field
