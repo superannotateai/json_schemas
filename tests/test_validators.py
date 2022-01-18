@@ -325,7 +325,7 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertFalse(validator.is_valid())
             self.assertEqual(validator.generate_report(),
-                             "instances[0].classId                             value is not a valid integer")
+                             "instances[0].classId                             integer type expected")
 
     def test_validate_document_annotation_with_null_created_at(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -1297,7 +1297,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()),253)
+            self.assertEqual(len(validator.generate_report()),246)
 
 
     def test_validate_video_point_labels(self):
@@ -1972,7 +1972,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("video")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()),416)
+            self.assertEqual(len(validator.generate_report()),409)
 
     def test_validate_vector_empty_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -2132,7 +2132,7 @@ class TestSchemas(TestCase):
             validator.is_valid()
             print(validator.generate_report())
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 155)
+            self.assertEqual(len(validator.generate_report()), 141)
 
     def test_validate_vector_empty_annotation_bad_role(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:

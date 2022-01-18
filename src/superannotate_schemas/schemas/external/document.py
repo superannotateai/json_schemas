@@ -6,7 +6,7 @@ from superannotate_schemas.schemas.base import BaseInstance
 from superannotate_schemas.schemas.base import BaseMetadata as Metadata
 from superannotate_schemas.schemas.base import Tag
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import Field
 from pydantic import StrictStr
 from pydantic import StrictInt

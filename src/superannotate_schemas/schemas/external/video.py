@@ -14,7 +14,7 @@ from superannotate_schemas.schemas.base import PointLabels
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import StrictBool
 from pydantic import conlist
 from pydantic import ValidationError

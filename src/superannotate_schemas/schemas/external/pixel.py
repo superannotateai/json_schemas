@@ -10,7 +10,7 @@ from superannotate_schemas.schemas.base import PixelColor
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import Comment
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import Field
 
 
