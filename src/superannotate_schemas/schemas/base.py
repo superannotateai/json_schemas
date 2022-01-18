@@ -16,6 +16,7 @@ from pydantic import Field
 from pydantic import StrRegexError
 from pydantic import ValidationError
 from pydantic.error_wrappers import ErrorWrapper
+from pydantic.errors import EnumMemberError
 from pydantic import validator
 from pydantic.validators import strict_str_validator
 from pydantic.color import Color
@@ -31,6 +32,13 @@ from superannotate_schemas.schemas.constances import POINT_LABEL_VALUE_FORMAT_ER
 from superannotate_schemas.schemas.constances import POINT_LABEL_KEY_FORMAT_ERROR_MESSAGE
 from superannotate_schemas.schemas.constances import INVALID_DICT_MESSAGE
 
+
+def enum_error_handling(self) -> str:
+    permitted = ", ".join(repr(v.value) for v in self.enum_values)
+    return f"Invalid value, permitted: {permitted}"
+
+
+EnumMemberError.__str__ = enum_error_handling
 
 NotEmptyStr = constr(strict=True, min_length=1)
 
