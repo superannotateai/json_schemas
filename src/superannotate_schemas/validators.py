@@ -17,7 +17,7 @@ from superannotate_schemas.schemas.internal import VideoAnnotation as InternalVi
 from superannotate_schemas.schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
 
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import Extra
 from pydantic import ValidationError
 

@@ -2,7 +2,7 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import Field
 from pydantic import StrictFloat
 from pydantic import StrictInt

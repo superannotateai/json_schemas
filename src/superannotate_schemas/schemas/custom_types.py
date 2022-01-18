@@ -1,7 +1,7 @@
 from typing import Any
 from typing import TypeVar
 
-from pydantic import BaseModel
+from superannotate_schemas.schemas.base import BaseModel
 from pydantic import ValidationError
 from pydantic.error_wrappers import ErrorWrapper
 
