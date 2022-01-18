@@ -30,7 +30,6 @@ class AnnotationPart(BaseModel):
 
 class AnnotationInstance(BaseImageAnnotationInstance):
     parts: List[AnnotationPart]
-    class_name: StrictStr = Field(alias="className")
     attributes: Optional[List[Attribute]] = Field(list())
 
 
