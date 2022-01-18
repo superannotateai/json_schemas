@@ -2050,3 +2050,49 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertTrue(validator.is_valid())
+
+
+    def test_validate_pixel_annotation_instance_without_class_name(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/pixel.json", "w") as pix_json:
+                pix_json.write(
+                    '''
+                    {
+                      "metadata": {
+                        "name": "example_image_1.jpg",
+                        "lastAction": {
+                          "email": "shab.prog@gmail.com",
+                          "timestamp": 1637306216
+                        }
+                      },
+                      "instances": [
+                        {
+                          "creationType": "Preannotation",
+                          "classId": 887060,
+                          "visible": true,
+                          "probability": 100,
+                          "attributes": [
+                            {
+                              "id": 1223660,
+                              "groupId": 358141,
+                              "name": "no",
+                              "groupName": "small"
+                            }
+                          ],
+                          "parts": [
+                            {
+                              "color": "#000447"
+                            }
+                          ]
+                        }
+                      ],
+                      "tags": [],
+                      "comments": []
+                    }
+                    '''
+                )
+
+            with open(f"{tmpdir_name}/pixel.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("pixel")(data)
+            self.assertTrue(validator.is_valid())
