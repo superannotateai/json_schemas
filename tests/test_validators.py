@@ -310,7 +310,12 @@ class TestSchemas(TestCase):
                                         "email": "some.email@gmail.com",
                                         "role": "Admin"
                                       },
-                                      "attributes": [],
+                                      "attributes": [
+                                      {
+                                                    "id": 1175876,
+                                                    "groupId": 338357
+                                      }
+                                      ],
                                       "creationType": "Manual",
                                       "className": "vid"
                                     }],
@@ -324,8 +329,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(validator.generate_report(),
-                             "instances[0].classId                             integer type expected")
+            self.assertEqual(len(validator.generate_report()), 198)
 
     def test_validate_document_annotation_with_null_created_at(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
