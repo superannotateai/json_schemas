@@ -10,6 +10,7 @@ from superannotate_schemas.schemas.base import BaseImageMetadata as Metadata
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import AxisPoint
 from superannotate_schemas.schemas.base import VectorAnnotationTypeEnum
+from superannotate_schemas.schemas.base import BaseInstanceTag
 from superannotate_schemas.schemas.base import StrictNumber
 from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 from superannotate_schemas.schemas.base import BaseModel
@@ -22,6 +23,11 @@ from pydantic import validate_model
 from pydantic import ValidationError
 from pydantic import validator
 from pydantic.error_wrappers import ErrorWrapper
+
+
+
+class InstanceTag(BaseInstanceTag):
+    class_id: StrictInt
 
 
 class Attribute(BaseAttribute):
@@ -110,12 +116,13 @@ ANNOTATION_TYPES = {
     VectorAnnotationTypeEnum.POLYLINE: PolyLine,
     VectorAnnotationTypeEnum.ELLIPSE: Ellipse,
     VectorAnnotationTypeEnum.RBBOX: RotatedBox,
+    VectorAnnotationTypeEnum.TAG: InstanceTag,
 }
 
 
 class AnnotationInstance(BaseModel):
     __root__: Union[
-        Template, Cuboid, Point, PolyLine, Polygon, Bbox, Ellipse, RotatedBox
+        Template, Cuboid, Point, PolyLine, Polygon, Bbox, Ellipse, RotatedBox, InstanceTag
     ]
 
     @classmethod

@@ -21,8 +21,12 @@ from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 from superannotate_schemas.schemas.base import NotEmptyStr
 from superannotate_schemas.schemas.base import StrictNumber
 from superannotate_schemas.schemas.base import Tag
-from superannotate_schemas.schemas.base import InstanceTag
+from superannotate_schemas.schemas.base import BaseInstanceTag
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
+
+
+class InstanceTag(BaseInstanceTag):
+    class_name: NotEmptyStr
 
 
 class Attribute(BaseAttribute):

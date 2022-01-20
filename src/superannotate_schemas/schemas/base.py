@@ -65,8 +65,8 @@ class AxisPoint(BaseModel):
 class BaseAttribute(BaseModel):
     id: Optional[StrictInt]
     group_id: Optional[StrictInt] = Field(alias="groupId")
-    name: Optional[NotEmptyStr]
-    group_name: Optional[NotEmptyStr] = Field(alias="groupName")
+    name: NotEmptyStr
+    group_name: NotEmptyStr = Field(alias="groupName")
 
 
 class Tag(BaseModel):
@@ -121,7 +121,7 @@ class BaseInstance(TrackableModel, TimedBaseModel):
     class_name: Optional[NotEmptyStr] = Field(None, alias="className")
 
 
-class InstanceTag(BaseInstance):
+class BaseInstanceTag(BaseInstance):
     type: TagTypeEnum
     probability: Optional[StrictInt] = Field(100)
     attributes: Optional[List[BaseAttribute]] = Field(list())
