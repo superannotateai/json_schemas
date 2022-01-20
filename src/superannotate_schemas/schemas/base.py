@@ -139,7 +139,7 @@ class BaseMetadata(BaseModel):
 class BaseImageMetadata(BaseMetadata):
     width: Optional[StrictInt]
     height: Optional[StrictInt]
-    pinned: Optional[bool]
+    pinned: Optional[StrictBool]
 
 
 class Correspondence(BaseModel):
