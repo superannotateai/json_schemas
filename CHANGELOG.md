@@ -1,6 +1,13 @@
 # Changelog 
 
+
+
 All release higlighths of this project will be documented in this file.
+
+## 1.0.37 - Jan 27 2022
+### Added
+- Add CLI argument report_path
+###
 
 ## 1.0.36 - Jan 20 2022
 ### Added
