@@ -2147,11 +2147,11 @@ class TestSchemas(TestCase):
                       },
                       "width":480,
                       "height":270,
+                      "pinned": [ "fasdf" ],
                       "name":"1 copy_001.jpg",
                       "projectId":181302,
                       "isPredicted":false,
                       "status":"Completed",
-                      "pinned":false,
                       "annotatorEmail":null,
                       "qaEmail":null
                    },
@@ -2209,4 +2209,5 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 113)
+            print(validator.generate_report())
+            self.assertEqual(len(validator.generate_report()), 191)
