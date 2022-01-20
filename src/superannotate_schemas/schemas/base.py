@@ -64,8 +64,8 @@ class AxisPoint(BaseModel):
 class BaseAttribute(BaseModel):
     id: Optional[StrictInt]
     group_id: Optional[StrictInt] = Field(alias="groupId")
-    name: Optional[NotEmptyStr]
-    group_name: Optional[NotEmptyStr] = Field(alias="groupName")
+    name: NotEmptyStr
+    group_name: NotEmptyStr = Field(alias="groupName")
 
 
 class Tag(BaseModel):

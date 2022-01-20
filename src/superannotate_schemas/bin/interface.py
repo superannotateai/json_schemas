@@ -1,4 +1,5 @@
 import os
+from os.path import expanduser
 import json
 import errno
 from pathlib import Path
@@ -61,7 +62,7 @@ class CLIInterface:
                         if verbose:
                             print(f"{'-'* 4}{path}\n{report}")
                         if report_path:
-                            with open(f"{report_path}/{uniquify(Path(path).name)}") as validation_report:
+                            with open(uniquify(f"{report_path}/{(Path(path).name)}"), "w") as validation_report:
                                 validation_report.write(report)
                         else:
                             validation_result.append({path: False})
