@@ -1,6 +1,6 @@
 # Changelog 
 All release higlighths of this project will be documented in this file.
-## 1.0.3
+## 1.0.3 - Dec 16 2021
 ### Added
 - tests
 ### Updated
