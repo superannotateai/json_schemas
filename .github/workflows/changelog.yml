@@ -21,7 +21,3 @@ jobs:
     - uses: dropseed/changerelease@v1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        # optional
-        tag_prefix: v
-        changelog: CR_CHANGELOG.md
-        remote_changelog: false
