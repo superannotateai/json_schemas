@@ -15,7 +15,7 @@ All release higlighths of this project will be documented in this file.
 ### Fixed
 - Schemas.
 ###
-## 1.0.0 - Dec 12 2021
+## 1.0.1 - Dec 12 2021
 ### Added
 - Models
 - CLI 
