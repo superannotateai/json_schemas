@@ -228,7 +228,7 @@ class BaseVectorInstance(BaseImageAnnotationInstance):
 #     is_predicted: Optional[StrictBool] = Field(None, alias="isPredicted")
 
 
-class PixelColor(BaseModel):
+class HexColor(BaseModel):
     __root__: ColorType
 
     @validator("__root__")

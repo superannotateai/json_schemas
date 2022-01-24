@@ -38,3 +38,8 @@ class BaseImageRoleEnum(str, Enum):
     ADMIN = "Admin"
     ANNOTATOR = "Annotator"
     QA = "QA"
+
+
+class ClassTypeEnum(str, Enum):
+    OBJECT = "object"
+    TAG = "tag"

@@ -2,7 +2,7 @@ from typing import List
 from typing import Optional
 
 from superannotate_schemas.schemas.base import BaseImageMetadata as Metadata
-from superannotate_schemas.schemas.base import PixelColor
+from superannotate_schemas.schemas.base import HexColor
 from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageAnnotationInstance
 from superannotate_schemas.schemas.base import Tag
@@ -19,7 +19,7 @@ class Attribute(BaseAttribute):
 
 
 class AnnotationPart(BaseModel):
-    color: PixelColor
+    color: HexColor
 
 
 class AnnotationInstance(BaseImageAnnotationInstance):
