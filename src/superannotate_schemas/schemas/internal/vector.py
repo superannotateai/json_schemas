@@ -112,6 +112,7 @@ ANNOTATION_TYPES = {
     VectorAnnotationTypeEnum.RBBOX: RotatedBox,
 }
 
+
 class AnnotationInstance(BaseModel):
     __root__: Union[
         Template, Cuboid, Point, PolyLine, Polygon, Bbox, Ellipse, RotatedBox
