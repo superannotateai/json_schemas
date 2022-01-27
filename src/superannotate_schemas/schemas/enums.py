@@ -10,6 +10,7 @@ class VectorAnnotationTypeEnum(str, Enum):
     POLYGON = "polygon"
     POINT = "point"
     RBBOX = "rbbox"
+    TAG = "tag"
 
 
 class CreationTypeEnum(str, Enum):

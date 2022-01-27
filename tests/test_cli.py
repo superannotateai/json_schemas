@@ -83,3 +83,4 @@ class TestCLI(TestCase):
         # print(time.time() - s)
         import datetime
         print((datetime.datetime.now(datetime.timezone.utc)).strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + 'Z')
+
