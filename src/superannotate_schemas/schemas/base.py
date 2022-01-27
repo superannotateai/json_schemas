@@ -26,7 +26,7 @@ from superannotate_schemas.schemas.enums import CreationTypeEnum
 from superannotate_schemas.schemas.enums import BaseImageRoleEnum
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 from superannotate_schemas.schemas.enums import AnnotationStatusEnum
-from superannotate_schemas.schemas.enums import TagTypeEnum
+from superannotate_schemas.schemas.enums import ClassTypeEnum
 from superannotate_schemas.schemas.constances import DATE_REGEX
 from superannotate_schemas.schemas.constances import DATE_TIME_FORMAT_ERROR_MESSAGE
 from superannotate_schemas.schemas.constances import POINT_LABEL_VALUE_FORMAT_ERROR_MESSAGE
@@ -122,7 +122,7 @@ class BaseInstance(TrackableModel, TimedBaseModel):
 
 
 class BaseInstanceTag(BaseInstance):
-    type: TagTypeEnum
+    type: ClassTypeEnum
     probability: Optional[StrictInt] = Field(100)
     attributes: Optional[List[BaseAttribute]] = Field(list())
 

@@ -2,7 +2,6 @@ from typing import Optional
 from typing import List
 
 from superannotate_schemas.schemas.base import BaseModel
-from superannotate_schemas.schemas.base import TrackableModel
 from superannotate_schemas.schemas.base import TimedBaseModel
 from superannotate_schemas.schemas.base import StrictInt
 from superannotate_schemas.schemas.base import StrictStr

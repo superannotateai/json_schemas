@@ -15,6 +15,7 @@ from superannotate_schemas.schemas.internal import PixelAnnotation as InternalPi
 from superannotate_schemas.schemas.internal import VectorAnnotation as InternalVectorAnnotation
 from superannotate_schemas.schemas.internal import VideoAnnotation as InternalVideoAnnotation
 from superannotate_schemas.schemas.internal import DocumentAnnotation as InternalDocumentAnnotation
+from superannotate_schemas.schemas.classes import AnnotationClass
 
 
 from superannotate_schemas.schemas.base import BaseModel
@@ -95,7 +96,6 @@ class AnnotationValidators:
             ValidatorFactory.get_validator(ExternalDocumentAnnotation),
             ValidatorFactory.get_validator(InternalDocumentAnnotation)
         )
-
     }
 
     @classmethod
