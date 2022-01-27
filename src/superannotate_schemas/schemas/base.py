@@ -26,6 +26,7 @@ from superannotate_schemas.schemas.enums import CreationTypeEnum
 from superannotate_schemas.schemas.enums import BaseImageRoleEnum
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 from superannotate_schemas.schemas.enums import AnnotationStatusEnum
+from superannotate_schemas.schemas.enums import TagTypeEnum
 from superannotate_schemas.schemas.constances import DATE_REGEX
 from superannotate_schemas.schemas.constances import DATE_TIME_FORMAT_ERROR_MESSAGE
 from superannotate_schemas.schemas.constances import POINT_LABEL_VALUE_FORMAT_ERROR_MESSAGE
@@ -70,12 +71,6 @@ class BaseAttribute(BaseModel):
 
 class Tag(BaseModel):
     __root__: NotEmptyStr
-
-
-class AttributeGroup(BaseModel):
-    name: NotEmptyStr
-    is_multiselect: Optional[bool] = Field(False)
-    attributes: List[BaseAttribute]
 
 
 class BboxPoints(BaseModel):
@@ -124,6 +119,12 @@ class LastUserAction(BaseModel):
 class BaseInstance(TrackableModel, TimedBaseModel):
     class_id: Optional[StrictInt] = Field(None, alias="classId")
     class_name: Optional[NotEmptyStr] = Field(None, alias="className")
+
+
+class BaseInstanceTag(BaseInstance):
+    type: TagTypeEnum
+    probability: Optional[StrictInt] = Field(100)
+    attributes: Optional[List[BaseAttribute]] = Field(list())
 
 
 class BaseMetadata(BaseModel):
@@ -219,13 +220,6 @@ class BaseVectorInstance(BaseImageAnnotationInstance):
     point_labels: Optional[PointLabels] = Field(alias="pointLabels")
     tracking_id: Optional[str] = Field(alias="trackingId")
     group_id: Optional[int] = Field(alias="groupId")
-
-#
-# class Metadata(BaseMetadata):
-#     name: NotEmptyStr
-#     status: Optional[AnnotationStatusEnum]
-#     pinned: Optional[StrictBool]
-#     is_predicted: Optional[StrictBool] = Field(None, alias="isPredicted")
 
 
 class PixelColor(BaseModel):
