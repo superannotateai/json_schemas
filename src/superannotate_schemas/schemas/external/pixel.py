@@ -6,7 +6,7 @@ from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageMetadata
 from superannotate_schemas.schemas.base import NotEmptyStr
 from superannotate_schemas.schemas.base import StrictStr
-from superannotate_schemas.schemas.base import PixelColor
+from superannotate_schemas.schemas.base import HexColor
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import Comment
 
@@ -25,7 +25,7 @@ class MetaData(BaseImageMetadata):
 
 
 class AnnotationPart(BaseModel):
-    color: PixelColor
+    color: HexColor
 
 
 class AnnotationInstance(BaseImageAnnotationInstance):

@@ -26,6 +26,7 @@ from superannotate_schemas.schemas.enums import CreationTypeEnum
 from superannotate_schemas.schemas.enums import BaseImageRoleEnum
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 from superannotate_schemas.schemas.enums import AnnotationStatusEnum
+from superannotate_schemas.schemas.enums import ClassTypeEnum
 from superannotate_schemas.schemas.constances import DATE_REGEX
 from superannotate_schemas.schemas.constances import DATE_TIME_FORMAT_ERROR_MESSAGE
 from superannotate_schemas.schemas.constances import POINT_LABEL_VALUE_FORMAT_ERROR_MESSAGE
@@ -64,18 +65,12 @@ class AxisPoint(BaseModel):
 class BaseAttribute(BaseModel):
     id: Optional[StrictInt]
     group_id: Optional[StrictInt] = Field(alias="groupId")
-    name: NotEmptyStr
-    group_name: NotEmptyStr = Field(alias="groupName")
+    name: Optional[NotEmptyStr]
+    group_name: Optional[NotEmptyStr] = Field(alias="groupName")
 
 
 class Tag(BaseModel):
     __root__: NotEmptyStr
-
-
-class AttributeGroup(BaseModel):
-    name: NotEmptyStr
-    is_multiselect: Optional[bool] = Field(False)
-    attributes: List[BaseAttribute]
 
 
 class BboxPoints(BaseModel):
@@ -124,6 +119,12 @@ class LastUserAction(BaseModel):
 class BaseInstance(TrackableModel, TimedBaseModel):
     class_id: Optional[StrictInt] = Field(None, alias="classId")
     class_name: Optional[NotEmptyStr] = Field(None, alias="className")
+
+
+class BaseInstanceTag(BaseInstance):
+    type: ClassTypeEnum
+    probability: Optional[StrictInt] = Field(100)
+    attributes: Optional[List[BaseAttribute]] = Field(list())
 
 
 class BaseMetadata(BaseModel):
@@ -220,15 +221,8 @@ class BaseVectorInstance(BaseImageAnnotationInstance):
     tracking_id: Optional[str] = Field(alias="trackingId")
     group_id: Optional[int] = Field(alias="groupId")
 
-#
-# class Metadata(BaseMetadata):
-#     name: NotEmptyStr
-#     status: Optional[AnnotationStatusEnum]
-#     pinned: Optional[StrictBool]
-#     is_predicted: Optional[StrictBool] = Field(None, alias="isPredicted")
 
-
-class PixelColor(BaseModel):
+class HexColor(BaseModel):
     __root__: ColorType
 
     @validator("__root__")

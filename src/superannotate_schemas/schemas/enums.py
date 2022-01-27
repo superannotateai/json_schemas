@@ -10,6 +10,7 @@ class VectorAnnotationTypeEnum(str, Enum):
     POLYGON = "polygon"
     POINT = "point"
     RBBOX = "rbbox"
+    TAG = "tag"
 
 
 class CreationTypeEnum(str, Enum):
@@ -38,3 +39,8 @@ class BaseImageRoleEnum(str, Enum):
     ADMIN = "Admin"
     ANNOTATOR = "Annotator"
     QA = "QA"
+
+
+class ClassTypeEnum(str, Enum):
+    OBJECT = "object"
+    TAG = "tag"
