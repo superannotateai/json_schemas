@@ -95,6 +95,7 @@ class AnnotationValidators:
             ValidatorFactory.get_validator(ExternalDocumentAnnotation),
             ValidatorFactory.get_validator(InternalDocumentAnnotation)
         )
+
     }
 
     @classmethod

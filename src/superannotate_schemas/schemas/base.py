@@ -65,8 +65,8 @@ class AxisPoint(BaseModel):
 class BaseAttribute(BaseModel):
     id: Optional[StrictInt]
     group_id: Optional[StrictInt] = Field(alias="groupId")
-    name: NotEmptyStr
-    group_name: NotEmptyStr = Field(alias="groupName")
+    name: Optional[NotEmptyStr]
+    group_name: Optional[NotEmptyStr] = Field(alias="groupName")
 
 
 class Tag(BaseModel):
@@ -222,7 +222,7 @@ class BaseVectorInstance(BaseImageAnnotationInstance):
     group_id: Optional[int] = Field(alias="groupId")
 
 
-class PixelColor(BaseModel):
+class HexColor(BaseModel):
     __root__: ColorType
 
     @validator("__root__")
