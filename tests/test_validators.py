@@ -2143,6 +2143,8 @@ class TestSchemas(TestCase):
             with open(f"{tmpdir_name}/vector_empty.json", "w") as vector_empty:
                 vector_empty.write(
                     '''
+                    
+                    
                 {
                    "metadata":{
                       "lastAction":{
@@ -2166,6 +2168,54 @@ class TestSchemas(TestCase):
 
                    ],
                    "instances":[
+                   {       "type": "tag",
+                            "classId": 530982,
+                            "className": "Weather",
+                            "probability": 100,
+                            "attributes": [
+                              {
+                                "id": 94853,
+                                "groupId": 23650,
+                                "name": "Winter",
+                                "groupName": "Season"
+                              }
+                            ],
+                            "createdAt": "2021-12-24T12:12:07.324Z",
+                            "createdBy": {
+                              "email": "annotator@superannotate.com",
+                              "role": "Annotator"
+                            },
+                            "creationType": "Manual",
+                            "updatedAt": "2021-12-24T12:12:58.011Z",
+                            "updatedBy": {
+                              "email": "qa@superannotate.com",
+                              "role": "QA"
+                            }
+                      },
+                      {      "type": "tags",
+                            "classId": 530982,
+                            "className": "Weather",
+                            "probability": 100,
+                            "attributes": [
+                              {
+                                "id": 94853,
+                                "groupId": 23650,
+                                "name": "Winter",
+                                "groupName": "Season"
+                              }
+                            ],
+                            "createdAt": "2021-12-24T12:12:07.324Z",
+                            "createdBy": {
+                              "email": "annotator@superannotate.com",
+                              "role": "Annotator"
+                            },
+                            "creationType": "Manual",
+                            "updatedAt": "2021-12-24T12:12:58.011Z",
+                            "updatedBy": {
+                              "email": "qa@superannotate.com",
+                              "role": "QA"
+                            }
+                      },
                       {
                          "type":"rbbox",
                          "classId":901659,
@@ -2214,4 +2264,4 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
             print(validator.generate_report())
-            self.assertEqual(len(validator.generate_report()), 191)
+            self.assertEqual(len(validator.generate_report()), 404)

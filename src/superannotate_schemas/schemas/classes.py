@@ -38,7 +38,7 @@ class AnnotationClass(TimedBaseModel):
     name: StrictStr
     color: HexColor
     count: Optional[StrictInt]
-    attribute_groups: List[AttributeGroup]
+    attribute_groups: List[AttributeGroup] = []
 
     def __hash__(self):
         return hash(f"{self.id}{self.type}{self.name}")
