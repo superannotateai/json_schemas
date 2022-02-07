@@ -54,10 +54,10 @@ class AnnotationClass(TimedBaseModel):
         }
 
     def to_dict(self):
-        self.Config.use_enum_values = True
         _dict = self.dict()
-        self.Config.use_enum_values = False
+        if isinstance(_dict["type"], ClassTypeEnum):
+            _dict["type"] = _dict["type"].value
         return _dict
-    
+
 class AnnotationClasses(BaseModel):
     __root__: List[AnnotationClass]
