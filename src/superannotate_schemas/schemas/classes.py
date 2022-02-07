@@ -31,10 +31,26 @@ class AttributeGroup(TimedBaseModel):
         return hash(f"{self.id}{self.class_id}{self.name}")
 
 
+from pydantic import BaseModel
+
+from enum import Enum
+from typing import Union
+
+
+class AnnotationClassType(Enum):
+    OBJECT = "object"
+    TAG = "tag"
+
+    def api_repr(self):
+        if self.value == self.OBJECT.value:
+            return 1
+        return 2
+
+
 class AnnotationClass(TimedBaseModel):
     id: Optional[StrictInt]
     project_id: Optional[StrictInt]
-    type: ClassTypeEnum = ClassTypeEnum.OBJECT
+    type: AnnotationClassType = AnnotationClassType.OBJECT
     name: StrictStr
     color: HexColor
     count: Optional[StrictInt]
@@ -42,6 +58,11 @@ class AnnotationClass(TimedBaseModel):
 
     def __hash__(self):
         return hash(f"{self.id}{self.type}{self.name}")
+
+    class Config:
+        json_encoders = {
+            AnnotationClassType: lambda value: value.api_repr()
+        }
 
 
 class AnnotationClasses(BaseModel):

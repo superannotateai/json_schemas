@@ -329,7 +329,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 198)
+            self.assertEqual(len(validator.generate_report()), 70)
 
     def test_validate_document_annotation_with_null_created_at(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -513,7 +513,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()),143)
+            self.assertEqual(len(validator.generate_report()),148)
 
 
     @patch('builtins.print')
