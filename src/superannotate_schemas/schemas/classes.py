@@ -53,5 +53,11 @@ class AnnotationClass(TimedBaseModel):
             ClassTypeEnum: lambda value: value.api_repr()
         }
 
+    def to_dict(self):
+        self.Config.use_enum_values = True
+        _dict = self.dict()
+        self.Config.use_enum_values = False
+        return _dict
+    
 class AnnotationClasses(BaseModel):
     __root__: List[AnnotationClass]

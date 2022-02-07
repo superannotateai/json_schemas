@@ -21,6 +21,9 @@ class TestSchemas(TestCase):
                         'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:48:18.000Z'}]}]})
         data = json.loads(annotations_class.json())
         self.assertEqual(data["type"], 2)
+        self.assertEqual(annotations_class.to_dict()["type"],'tag')
+
+
 
     def test_validate_document_annotation_without_classname(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
