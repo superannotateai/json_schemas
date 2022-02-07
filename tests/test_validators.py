@@ -1,15 +1,26 @@
 import json
-import os
 import tempfile
-from os.path import dirname
 from unittest import TestCase
 from unittest.mock import patch
-from json_schemas.src.superannotate_schemas.validators import AnnotationValidators
-from pydantic import ValidationError
+from superannotate_schemas.validators import AnnotationValidators
+from superannotate_schemas.schemas.classes import AnnotationClass
 
 
 
 class TestSchemas(TestCase):
+    def test_tag_enum_serialization(self):
+        annotations_class = AnnotationClass(
+            **{'id': 56820, 'project_id': 7617, 'name': 'Personal vehicle', 'color': '#547497', 'count': 18,
+               'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:48:18.000Z', 'type': 'tag',
+               'attribute_groups': [{'id': 21448, 'class_id': 56820, 'name': 'Large', 'is_multiselect': 0,
+                                     'createdAt': '2020-09-29T10:39:39.000Z',
+                                     'updatedAt': '2020-09-29T10:39:39.000Z', 'attributes': [
+                       {'id': 57096, 'group_id': 21448, 'project_id': 7617, 'name': 'no', 'count': 0,
+                        'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:39:39.000Z'},
+                       {'id': 57097, 'group_id': 21448, 'project_id': 7617, 'name': 'yes', 'count': 1,
+                        'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:48:18.000Z'}]}]})
+        data = json.loads(annotations_class.json())
+        self.assertEqual(data["type"], 2)
 
     def test_validate_document_annotation_without_classname(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:

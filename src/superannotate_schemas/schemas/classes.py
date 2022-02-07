@@ -1,5 +1,8 @@
+from enum import Enum
 from typing import Optional
 from typing import List
+from typing import Any
+from typing import Union
 
 from superannotate_schemas.schemas.base import BaseModel
 from superannotate_schemas.schemas.base import TimedBaseModel
@@ -31,26 +34,10 @@ class AttributeGroup(TimedBaseModel):
         return hash(f"{self.id}{self.class_id}{self.name}")
 
 
-from pydantic import BaseModel
-
-from enum import Enum
-from typing import Union
-
-
-class AnnotationClassType(Enum):
-    OBJECT = "object"
-    TAG = "tag"
-
-    def api_repr(self):
-        if self.value == self.OBJECT.value:
-            return 1
-        return 2
-
-
 class AnnotationClass(TimedBaseModel):
     id: Optional[StrictInt]
     project_id: Optional[StrictInt]
-    type: AnnotationClassType = AnnotationClassType.OBJECT
+    type: ClassTypeEnum = ClassTypeEnum.OBJECT
     name: StrictStr
     color: HexColor
     count: Optional[StrictInt]
@@ -60,9 +47,27 @@ class AnnotationClass(TimedBaseModel):
         return hash(f"{self.id}{self.type}{self.name}")
 
     class Config:
+        validate_assignment = True
+        use_enum_values = False
         json_encoders = {
-            AnnotationClassType: lambda value: value.api_repr()
+            ClassTypeEnum: lambda value: value.api_repr()
         }
+
+    def _get_value(
+        cls,
+        v: Any,
+        to_dict: bool,
+        by_alias: bool,
+        include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
+        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
+        exclude_unset: bool,
+        exclude_defaults: bool,
+        exclude_none: bool,
+    ) -> Any:
+        if isinstance(v, Enum):
+            return v.value
+
+        return super()._get_value(v, to_dict, by_alias, include, exclude, exclude_unset, exclude_defaults, exclude_none)
 
 
 class AnnotationClasses(BaseModel):
