@@ -53,6 +53,7 @@ class AnnotationClass(TimedBaseModel):
             ClassTypeEnum: lambda value: value.api_repr()
         }
 
+    @classmethod
     def _get_value(
         cls,
         v: Any,
