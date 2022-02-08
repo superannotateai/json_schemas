@@ -26,7 +26,7 @@ from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 
 
 class InstanceTag(BaseInstanceTag):
-    class_name: NotEmptyStr
+    class_name: NotEmptyStr = Field(None, alias="className")
 
 
 class Attribute(BaseAttribute):
