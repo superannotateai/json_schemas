@@ -1,8 +1,5 @@
-from enum import Enum
 from typing import Optional
 from typing import List
-from typing import Any
-from typing import Union
 
 from superannotate_schemas.schemas.base import BaseModel
 from superannotate_schemas.schemas.base import TimedBaseModel
@@ -48,27 +45,7 @@ class AnnotationClass(TimedBaseModel):
 
     class Config:
         validate_assignment = True
-        use_enum_values = False
-        json_encoders = {
-            ClassTypeEnum: lambda value: value.api_repr()
-        }
-
-    @classmethod
-    def _get_value(
-        cls,
-        v: Any,
-        to_dict: bool,
-        by_alias: bool,
-        include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
-        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
-        exclude_unset: bool,
-        exclude_defaults: bool,
-        exclude_none: bool,
-    ) -> Any:
-        if isinstance(v, Enum):
-            return v.value
-
-        return super()._get_value(v, to_dict, by_alias, include, exclude, exclude_unset, exclude_defaults, exclude_none)
+        use_enum_values = True
 
 
 class AnnotationClasses(BaseModel):

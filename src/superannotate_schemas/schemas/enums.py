@@ -44,8 +44,3 @@ class BaseImageRoleEnum(str, Enum):
 class ClassTypeEnum(Enum):
     OBJECT = "object"
     TAG = "tag"
-
-    def api_repr(self):
-        if self.value == self.OBJECT.value:
-            return 1
-        return 2
