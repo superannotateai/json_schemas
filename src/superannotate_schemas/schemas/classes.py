@@ -53,11 +53,23 @@ class AnnotationClass(TimedBaseModel):
             ClassTypeEnum: lambda value: value.api_repr()
         }
 
-    def to_dict(self):
-        _dict = self.dict()
-        if isinstance(_dict["type"], ClassTypeEnum):
-            _dict["type"] = _dict["type"].value
-        return _dict
+    @classmethod
+    def _get_value(
+        cls,
+        v: Any,
+        to_dict: bool,
+        by_alias: bool,
+        include: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
+        exclude: Optional[Union['AbstractSetIntStr', 'MappingIntStrAny']],
+        exclude_unset: bool,
+        exclude_defaults: bool,
+        exclude_none: bool,
+    ) -> Any:
+        if isinstance(v, Enum):
+            return v.value
+
+        return super()._get_value(v, to_dict, by_alias, include, exclude, exclude_unset, exclude_defaults, exclude_none)
+
 
 class AnnotationClasses(BaseModel):
     __root__: List[AnnotationClass]
