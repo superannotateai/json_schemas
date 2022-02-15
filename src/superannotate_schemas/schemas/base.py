@@ -125,6 +125,7 @@ class BaseInstanceTag(BaseInstance):
     type: ClassTypeEnum
     probability: Optional[StrictInt] = Field(100)
     attributes: Optional[List[BaseAttribute]] = Field(list())
+    class_name: NotEmptyStr
 
 
 class BaseMetadata(BaseModel):
