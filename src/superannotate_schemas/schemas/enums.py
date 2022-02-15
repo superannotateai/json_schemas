@@ -41,6 +41,6 @@ class BaseImageRoleEnum(str, Enum):
     QA = "QA"
 
 
-class ClassTypeEnum(Enum):
+class ClassTypeEnum(str, Enum):
     OBJECT = "object"
     TAG = "tag"
