@@ -121,11 +121,16 @@ class BaseInstance(TrackableModel, TimedBaseModel):
     class_name: Optional[NotEmptyStr] = Field(None, alias="className")
 
 
+class BaseInstanceTagAttribute(BaseAttribute):
+    name: NotEmptyStr
+    group_name: NotEmptyStr = Field(alias="groupName")
+
+
 class BaseInstanceTag(BaseInstance):
     type: ClassTypeEnum
     probability: Optional[StrictInt] = Field(100)
-    attributes: Optional[List[BaseAttribute]] = Field(list())
-    class_name: NotEmptyStr
+    attributes: Optional[List[BaseInstanceTagAttribute]] = Field(list())
+    class_name: NotEmptyStr = Field(alias="className")
 
 
 class BaseMetadata(BaseModel):

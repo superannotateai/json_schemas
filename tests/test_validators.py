@@ -2267,4 +2267,67 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
             print(validator.generate_report())
-            self.assertEqual(len(validator.generate_report()), 404)
+            self.assertEqual(len(validator.generate_report()), 340)
+
+    def test_validate_tag_without_class_name(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/tag.json", "w") as vector_empty:
+                vector_empty.write(
+                    '''
+
+
+                {
+                   "metadata":{
+                      "lastAction":{
+                         "email":"test@test.com",
+                         "timestamp":1641910273710
+                      },
+                      "width":480,
+                      "height":270,
+                      "pinned": true,
+                      "name":"1 copy_001.jpg",
+                      "projectId":181302,
+                      "isPredicted":false,
+                      "status":"Completed",
+                      "annotatorEmail":null,
+                      "qaEmail":null
+                   },
+                   "comments":[
+
+                   ],
+                   "tags":[
+
+                   ],
+                   "instances":[
+                   {       "type": "tag",
+                            "classId": 530982,
+                            "probability": 100,
+                            "attributes": [
+                              {
+                                "id": 94853,
+                                "groupId": 23650
+                              }
+                            ],
+                            "createdAt": "2021-12-24T12:12:07.324Z",
+                            "createdBy": {
+                              "email": "annotator@superannotate.com",
+                              "role": "Annotator"
+                            },
+                            "creationType": "Manual",
+                            "updatedAt": "2021-12-24T12:12:58.011Z",
+                            "updatedBy": {
+                              "email": "qa@superannotate.com",
+                              "role": "QA"
+                            }
+                      }
+                   ]
+                }
+                    '''
+                )
+
+            with open(f"{tmpdir_name}/tag.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            self.assertFalse(validator.is_valid())
+            print(validator.generate_report())
+            self.assertEqual(len(validator.generate_report()),191)
