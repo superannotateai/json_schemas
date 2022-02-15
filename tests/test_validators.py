@@ -340,7 +340,13 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 70)
+            # TODO adjust
+            self.assertEqual(
+                validator.generate_report().strip(),
+                """instances[0].classId                             integer type expected
+                instances[0].attributes[0].name                  field required
+                instances[0].attributes[0].groupName             field required""".strip()
+            )
 
     def test_validate_document_annotation_with_null_created_at(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:

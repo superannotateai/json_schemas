@@ -5,16 +5,16 @@ from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseInstance
 from superannotate_schemas.schemas.base import BaseMetadata as Metadata
 from superannotate_schemas.schemas.base import Tag
+from superannotate_schemas.schemas.base import NotEmptyStr
 
 from superannotate_schemas.schemas.base import BaseModel
 from pydantic import Field
 from pydantic import StrictStr
-from pydantic import StrictInt
 
 
 class Attribute(BaseAttribute):
-    id: StrictInt
-    group_id: StrictInt = Field(None, alias="groupId")
+    name: NotEmptyStr
+    group_name: NotEmptyStr = Field(alias="groupName")
 
 
 class DocumentInstance(BaseInstance):
