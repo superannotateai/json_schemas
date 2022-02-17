@@ -6,7 +6,6 @@ from typing import Union
 from pydantic import BaseModel as PyDanticBaseModel
 from pydantic import conlist
 from pydantic import constr
-from pydantic import EmailStr
 from pydantic import Extra
 from pydantic import StrictInt
 from pydantic import StrictFloat
@@ -44,6 +43,18 @@ EnumMemberError.__str__ = enum_error_handling
 NotEmptyStr = constr(strict=True, min_length=1)
 
 StrictNumber = Union[StrictInt, StrictFloat]
+
+
+class EmailStr(StrictStr):
+    @classmethod
+    def validate(cls, value: Union[str]) -> Union[str]:
+        try:
+            constr(
+                regex=r"^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+            ).validate(value)
+        except StrRegexError:
+            raise ValueError("Invalid email")
+        return value
 
 
 class BaseModel(PyDanticBaseModel):
