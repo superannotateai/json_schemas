@@ -6,3 +6,4 @@ six==1.16.0
 termcolor==1.1.0
 typing-extensions==3.10.0.2
 typingx==0.5.3
+email-validator>=1.0.3
