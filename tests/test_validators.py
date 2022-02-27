@@ -1,15 +1,28 @@
 import json
-import os
 import tempfile
-from os.path import dirname
 from unittest import TestCase
 from unittest.mock import patch
-from json_schemas.src.superannotate_schemas.validators import AnnotationValidators
-from pydantic import ValidationError
 
+from superannotate_schemas.schemas.classes import AnnotationClass
+from superannotate_schemas.schemas.enums import ClassTypeEnum
+from superannotate_schemas.validators import AnnotationValidators
 
 
 class TestSchemas(TestCase):
+    def test_tag_enum_serialization(self):
+        annotations_class = AnnotationClass(
+            **{'id': 56820, 'project_id': 7617, 'name': 'Personal vehicle', 'color': '#547497', 'count': 18,
+               'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:48:18.000Z', 'type': 'tag',
+               'attribute_groups': [{'id': 21448, 'class_id': 56820, 'name': 'Large', 'is_multiselect': 0,
+                                     'createdAt': '2020-09-29T10:39:39.000Z',
+                                     'updatedAt': '2020-09-29T10:39:39.000Z', 'attributes': [
+                       {'id': 57096, 'group_id': 21448, 'project_id': 7617, 'name': 'no', 'count': 0,
+                        'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:39:39.000Z'},
+                       {'id': 57097, 'group_id': 21448, 'project_id': 7617, 'name': 'yes', 'count': 1,
+                        'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:48:18.000Z'}]}]})
+        data = json.loads(annotations_class.json())
+        self.assertEqual(data["type"], "tag")
+
 
     def test_validate_document_annotation_without_classname(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -56,7 +69,6 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertTrue(validator.is_valid())
-
 
     def test_validate_annotation_with_wrong_bbox(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -111,7 +123,6 @@ class TestSchemas(TestCase):
                     }
 
                     """
-
 
                 )
 
@@ -257,7 +268,6 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("video")(data)
             self.assertTrue(validator.is_valid())
 
-
     def test_validate_error_message_format(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/test_validate_error_message_format.json",
@@ -274,7 +284,8 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(validator.generate_report(),"metadata.name                                    field required")
+            self.assertEqual(validator.generate_report(),
+                             "metadata.name                                    field required")
 
     @patch('builtins.print')
     def test_validate_document_annotation_wrong_class_id(self, mock_print):
@@ -329,7 +340,13 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("document")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 198)
+            # TODO adjust
+            self.assertEqual(
+                validator.generate_report().strip(),
+                """instances[0].classId                             integer type expected
+                instances[0].attributes[0].name                  field required
+                instances[0].attributes[0].groupName             field required""".strip()
+            )
 
     def test_validate_document_annotation_with_null_created_at(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -439,7 +456,6 @@ class TestSchemas(TestCase):
                 '''
                 )
 
-
             with open(f"{tmpdir_name}/{json_name}", "r") as f:
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
@@ -508,13 +524,11 @@ class TestSchemas(TestCase):
                 '''
                 )
 
-
             with open(f"{tmpdir_name}/test_validate_vector_invalid_instace_type_and_attr_annotation.json", "r") as f:
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()),143)
-
+            self.assertEqual(len(validator.generate_report()), 148)
 
     @patch('builtins.print')
     def test_validate_video_invalid_instance_type_and_attr_annotation(self, mock_print):
@@ -1301,8 +1315,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()),246)
-
+            self.assertEqual(len(validator.generate_report()), 246)
 
     def test_validate_video_point_labels(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -1616,7 +1629,6 @@ class TestSchemas(TestCase):
             self.assertFalse(validator.is_valid())
             self.assertEqual(validator.generate_report(),
                              "instances[0].meta.pointLabels                    value is not a valid dict")
-
 
     def test_validate_video_point_labels_bad_keys(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -1976,7 +1988,7 @@ class TestSchemas(TestCase):
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("video")(data)
             self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()),409)
+            self.assertEqual(len(validator.generate_report()), 409)
 
     def test_validate_vector_empty_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -2049,12 +2061,10 @@ class TestSchemas(TestCase):
                     '''
                 )
 
-
             with open(f"{tmpdir_name}/vector_empty.json", "r") as f:
                 data = json.loads(f.read())
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertTrue(validator.is_valid())
-
 
     def test_validate_pixel_annotation_instance_without_class_name(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -2101,7 +2111,6 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("pixel")(data)
             self.assertTrue(validator.is_valid())
 
-
     def test_validate_document_wrong_meta_data(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             path = f"{tmpdir_name}/test_validate_document_annotation_without_classname.json"
@@ -2143,6 +2152,8 @@ class TestSchemas(TestCase):
             with open(f"{tmpdir_name}/vector_empty.json", "w") as vector_empty:
                 vector_empty.write(
                     '''
+                    
+                    
                 {
                    "metadata":{
                       "lastAction":{
@@ -2166,6 +2177,54 @@ class TestSchemas(TestCase):
 
                    ],
                    "instances":[
+                   {       "type": "tag",
+                            "classId": 530982,
+                            "className": "Weather",
+                            "probability": 100,
+                            "attributes": [
+                              {
+                                "id": 94853,
+                                "groupId": 23650,
+                                "name": "Winter",
+                                "groupName": "Season"
+                              }
+                            ],
+                            "createdAt": "2021-12-24T12:12:07.324Z",
+                            "createdBy": {
+                              "email": "annotator@superannotate.com",
+                              "role": "Annotator"
+                            },
+                            "creationType": "Manual",
+                            "updatedAt": "2021-12-24T12:12:58.011Z",
+                            "updatedBy": {
+                              "email": "qa@superannotate.com",
+                              "role": "QA"
+                            }
+                      },
+                      {      "type": "tags",
+                            "classId": 530982,
+                            "className": "Weather",
+                            "probability": 100,
+                            "attributes": [
+                              {
+                                "id": 94853,
+                                "groupId": 23650,
+                                "name": "Winter",
+                                "groupName": "Season"
+                              }
+                            ],
+                            "createdAt": "2021-12-24T12:12:07.324Z",
+                            "createdBy": {
+                              "email": "annotator@superannotate.com",
+                              "role": "Annotator"
+                            },
+                            "creationType": "Manual",
+                            "updatedAt": "2021-12-24T12:12:58.011Z",
+                            "updatedBy": {
+                              "email": "qa@superannotate.com",
+                              "role": "QA"
+                            }
+                      },
                       {
                          "type":"rbbox",
                          "classId":901659,
@@ -2214,4 +2273,67 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
             print(validator.generate_report())
-            self.assertEqual(len(validator.generate_report()), 191)
+            self.assertEqual(len(validator.generate_report()), 340)
+
+    def test_validate_tag_without_class_name(self):
+        with tempfile.TemporaryDirectory() as tmpdir_name:
+            with open(f"{tmpdir_name}/tag.json", "w") as vector_empty:
+                vector_empty.write(
+                    '''
+
+
+                {
+                   "metadata":{
+                      "lastAction":{
+                         "email":"test@test.com",
+                         "timestamp":1641910273710
+                      },
+                      "width":480,
+                      "height":270,
+                      "pinned": true,
+                      "name":"1 copy_001.jpg",
+                      "projectId":181302,
+                      "isPredicted":false,
+                      "status":"Completed",
+                      "annotatorEmail":null,
+                      "qaEmail":null
+                   },
+                   "comments":[
+
+                   ],
+                   "tags":[
+
+                   ],
+                   "instances":[
+                   {       "type": "tag",
+                            "classId": 530982,
+                            "probability": 100,
+                            "attributes": [
+                              {
+                                "id": 94853,
+                                "groupId": 23650
+                              }
+                            ],
+                            "createdAt": "2021-12-24T12:12:07.324Z",
+                            "createdBy": {
+                              "email": "annotator@superannotate.com",
+                              "role": "Annotator"
+                            },
+                            "creationType": "Manual",
+                            "updatedAt": "2021-12-24T12:12:58.011Z",
+                            "updatedBy": {
+                              "email": "qa@superannotate.com",
+                              "role": "QA"
+                            }
+                      }
+                   ]
+                }
+                    '''
+                )
+
+            with open(f"{tmpdir_name}/tag.json", "r") as f:
+                data = json.loads(f.read())
+            validator = AnnotationValidators.get_validator("vector")(data)
+            self.assertFalse(validator.is_valid())
+            print(validator.generate_report())
+            self.assertEqual(len(validator.generate_report()),191)

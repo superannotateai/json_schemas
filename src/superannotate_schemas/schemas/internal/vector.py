@@ -14,6 +14,7 @@ from superannotate_schemas.schemas.base import BaseInstanceTag
 from superannotate_schemas.schemas.base import StrictNumber
 from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 from superannotate_schemas.schemas.base import BaseModel
+from superannotate_schemas.schemas.base import NotEmptyStr
 
 from pydantic import StrictInt
 from pydantic import StrictFloat
@@ -25,9 +26,9 @@ from pydantic import validator
 from pydantic.error_wrappers import ErrorWrapper
 
 
-
 class InstanceTag(BaseInstanceTag):
     class_id: StrictInt
+    class_name: NotEmptyStr = Field(None, alias="className")
 
 
 class Attribute(BaseAttribute):

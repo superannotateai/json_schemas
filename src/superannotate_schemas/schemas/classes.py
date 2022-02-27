@@ -24,7 +24,7 @@ class AttributeGroup(TimedBaseModel):
     id: Optional[StrictInt]
     class_id: Optional[StrictInt]
     name: StrictStr
-    is_multiselect: Optional[bool]
+    is_multiselect: Optional[bool] = False
     attributes: List[Attribute]
 
     def __hash__(self):
@@ -42,6 +42,10 @@ class AnnotationClass(TimedBaseModel):
 
     def __hash__(self):
         return hash(f"{self.id}{self.type}{self.name}")
+
+    class Config:
+        validate_assignment = True
+        use_enum_values = True
 
 
 class AnnotationClasses(BaseModel):

@@ -2,7 +2,6 @@ from subprocess import Popen, PIPE
 import os
 from os.path import dirname
 from tests import LIB_PATH
-from pydantic import EmailStr
 
 from unittest import TestCase
 

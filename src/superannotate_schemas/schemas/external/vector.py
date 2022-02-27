@@ -2,7 +2,6 @@ from typing import List
 from typing import Optional
 from typing import Union
 
-from superannotate_schemas.schemas.base import BaseModel
 from pydantic import Field
 from pydantic import StrictFloat
 from pydantic import StrictInt
@@ -14,6 +13,8 @@ from pydantic.error_wrappers import ErrorWrapper
 from superannotate_schemas.schemas.base import AxisPoint
 from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageMetadata
+from superannotate_schemas.schemas.base import BaseInstanceTag
+from superannotate_schemas.schemas.base import BaseModel
 from superannotate_schemas.schemas.base import BaseVectorInstance
 from superannotate_schemas.schemas.base import BboxPoints
 from superannotate_schemas.schemas.base import Comment
@@ -21,12 +22,11 @@ from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 from superannotate_schemas.schemas.base import NotEmptyStr
 from superannotate_schemas.schemas.base import StrictNumber
 from superannotate_schemas.schemas.base import Tag
-from superannotate_schemas.schemas.base import BaseInstanceTag
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 
 
 class InstanceTag(BaseInstanceTag):
-    class_name: NotEmptyStr
+    pass
 
 
 class Attribute(BaseAttribute):
@@ -164,3 +164,4 @@ class VectorAnnotation(BaseModel):
     comments: Optional[List[Comment]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())
     instances: Optional[List[AnnotationInstance]] = Field(list())
+
