@@ -26,6 +26,7 @@ from superannotate_schemas.schemas.enums import BaseImageRoleEnum
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 from superannotate_schemas.schemas.enums import AnnotationStatusEnum
 from superannotate_schemas.schemas.enums import ClassTypeEnum
+from superannotate_schemas.schemas.enums import DocumentAnnotationTypeEnum
 from superannotate_schemas.schemas.constances import DATE_REGEX
 from superannotate_schemas.schemas.constances import DATE_TIME_FORMAT_ERROR_MESSAGE
 from superannotate_schemas.schemas.constances import POINT_LABEL_VALUE_FORMAT_ERROR_MESSAGE
@@ -237,6 +238,10 @@ class BaseVectorInstance(BaseImageAnnotationInstance):
     point_labels: Optional[PointLabels] = Field(alias="pointLabels")
     tracking_id: Optional[str] = Field(alias="trackingId")
     group_id: Optional[int] = Field(alias="groupId")
+
+
+class BaseDocumentInstance(BaseInstance):
+    type: DocumentAnnotationTypeEnum
 
 
 class HexColor(BaseModel):

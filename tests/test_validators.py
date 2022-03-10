@@ -4,7 +4,6 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from superannotate_schemas.schemas.classes import AnnotationClass
-from superannotate_schemas.schemas.enums import ClassTypeEnum
 from superannotate_schemas.validators import AnnotationValidators
 
 
@@ -22,53 +21,6 @@ class TestSchemas(TestCase):
                         'createdAt': '2020-09-29T10:39:39.000Z', 'updatedAt': '2020-09-29T10:48:18.000Z'}]}]})
         data = json.loads(annotations_class.json())
         self.assertEqual(data["type"], "tag")
-
-
-    def test_validate_document_annotation_without_classname(self):
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            path = f"{tmpdir_name}/test_validate_document_annotation_without_classname.json"
-            with open(path, "w") as test_validate_document_annotation_without_classname:
-                test_validate_document_annotation_without_classname.write(
-                    '''
-                    {
-                        "metadata": {
-                            "name": "text_file_example_1",
-                            "status": "NotStarted",
-                            "url": "https://sa-public-files.s3.us-west-2.amazonaws.com/Text+project/text_file_example_1.txt",
-                            "projectId": 167826,
-                            "annotatorEmail": null,
-                            "qaEmail": null,
-                            "lastAction": {
-                                "email": "some.email@gmail.com",
-                                "timestamp": 1636620976450
-                            }
-                        },
-                        "instances": [{
-                                      "start": 253,
-                                      "end": 593,
-                                      "classId": -1,
-                                      "createdAt": "2021-10-22T10:40:26.151Z",
-                                      "createdBy": {
-                                        "email": "some.email@gmail.com",
-                                        "role": "Admin"
-                                      },
-                                      "updatedAt": "2021-10-22T10:40:29.953Z",
-                                      "updatedBy": {
-                                        "email": "some.email@gmail.com",
-                                        "role": "Admin"
-                                      },
-                                      "attributes": [],
-                                      "creationType": "Manual"
-                                    }],
-                        "tags": [],
-                        "freeText": ""
-                    }
-                    '''
-                )
-            with open(path, "r") as f:
-                data = json.loads(f.read())
-            validator = AnnotationValidators.get_validator("document")(data)
-            self.assertTrue(validator.is_valid())
 
     def test_validate_annotation_with_wrong_bbox(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -137,36 +89,6 @@ class TestSchemas(TestCase):
             #     "instances[0].type                                invalid type, valid types are bbox, "
             #     "template, cuboid, polygon, point, polyline, ellipse, rbbox"
             # )
-
-    def test_validate_document_annotation(self):
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            with open(f"{tmpdir_name}/doc.json", "w") as doc_json:
-                doc_json.write(
-                    '''
-                    {
-                        "metadata": {
-                            "name": "text_file_example_1",
-                            "status": "NotStarted",
-                            "url": "https://sa-public-files.s3.us-west-2.amazonaws.com/Text+project/text_file_example_1.txt",
-                            "projectId": 167826,
-                            "annotatorEmail": null,
-                            "qaEmail": null,
-                            "lastAction": {
-                                "email": "some.email@gmail.com",
-                                "timestamp": 1636620976450
-                            }
-                        },
-                        "instances": [],
-                        "tags": [],
-                        "freeText": ""
-                    }
-                    '''
-                )
-
-            with open(f"{tmpdir_name}/doc.json", "r") as f:
-                data = json.loads(f.read())
-            validator = AnnotationValidators.get_validator("document")(data)
-            self.assertTrue(validator.is_valid())
 
     def test_validate_pixel_annotation(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -286,115 +208,6 @@ class TestSchemas(TestCase):
             self.assertFalse(validator.is_valid())
             self.assertEqual(validator.generate_report(),
                              "metadata.name                                    field required")
-
-    @patch('builtins.print')
-    def test_validate_document_annotation_wrong_class_id(self, mock_print):
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            with open(f"{tmpdir_name}/test_validate_document_annotation_wrong_class_id.json",
-                      "w") as test_validate_document_annotation_wrong_class_id:
-                test_validate_document_annotation_wrong_class_id.write(
-                    '''
-                    {
-                        "metadata": {
-                            "name": "text_file_example_1",
-                            "status": "NotStarted",
-                            "url": "https://sa-public-files.s3.us-west-2.amazonaws.com/Text+project/text_file_example_1.txt",
-                            "projectId": 167826,
-                            "annotatorEmail": null,
-                            "qaEmail": null,
-                            "lastAction": {
-                                "email": "some.email@gmail.com",
-                                "timestamp": 1636620976450
-                            }
-                        },
-                        "instances": [{
-                                      "start": 253,
-                                      "end": 593,
-                                      "classId": "string",
-                                      "createdAt": "2021-10-22T10:40:26.151Z",
-                                      "createdBy": {
-                                        "email": "some.email@gmail.com",
-                                        "role": "Admin"
-                                      },
-                                      "updatedAt": "2021-10-22T10:40:29.953Z",
-                                      "updatedBy": {
-                                        "email": "some.email@gmail.com",
-                                        "role": "Admin"
-                                      },
-                                      "attributes": [
-                                      {
-                                                    "id": 1175876,
-                                                    "groupId": 338357
-                                      }
-                                      ],
-                                      "creationType": "Manual",
-                                      "className": "vid"
-                                    }],
-                        "tags": [],
-                        "freeText": ""
-                    }
-                    '''
-                )
-
-            with open(f"{tmpdir_name}/test_validate_document_annotation_wrong_class_id.json", "r") as f:
-                data = json.loads(f.read())
-            validator = AnnotationValidators.get_validator("document")(data)
-            self.assertFalse(validator.is_valid())
-            # TODO adjust
-            self.assertEqual(
-                validator.generate_report().strip(),
-                """instances[0].classId                             integer type expected
-                instances[0].attributes[0].name                  field required
-                instances[0].attributes[0].groupName             field required""".strip()
-            )
-
-    def test_validate_document_annotation_with_null_created_at(self):
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            with open(f"{tmpdir_name}/test_validate_document_annotation_with_null_created_at.json",
-                      "w") as test_validate_document_annotation_with_null_created_at:
-                test_validate_document_annotation_with_null_created_at.write(
-                    '''
-                    {
-                        "metadata": {
-                            "name": "text_file_example_1",
-                            "status": "NotStarted",
-                            "url": "https://sa-public-files.s3.us-west-2.amazonaws.com/Text+project/text_file_example_1.txt",
-                            "projectId": 167826,
-                            "annotatorEmail": null,
-                            "qaEmail": null,
-                            "lastAction": {
-                                "email": "some.email@gmail.com",
-                                "timestamp": 1636620976450
-                            }
-                        },
-                        "instances": [{
-                                      "start": 253,
-                                      "end": 593,
-                                      "classId": 1,
-                                      "createdAt": null,
-                                      "createdBy": {
-                                        "email": "some.email@gmail.com",
-                                        "role": "Admin"
-                                      },
-                                      "updatedAt": null,
-                                      "updatedBy": {
-                                        "email": "some.email@gmail.com",
-                                        "role": "Admin"
-                                      },
-                                      "attributes": [],
-                                      "creationType": "Manual",
-                                      "className": "vid"
-                                    }],
-                        "tags": [],
-                        "freeText": ""
-                    }
-                    '''
-                )
-
-            with open(f"{tmpdir_name}/test_validate_document_annotation_with_null_created_at.json", "r") as f:
-                data = json.loads(f.read())
-            validator = AnnotationValidators.get_validator("document")(data)
-            self.assertTrue(validator.is_valid())
 
     @patch('builtins.print')
     def test_validate_vector_instance_type_and_attr_annotation(self, mock_print):
@@ -2111,42 +1924,6 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("pixel")(data)
             self.assertTrue(validator.is_valid())
 
-    def test_validate_document_wrong_meta_data(self):
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            path = f"{tmpdir_name}/test_validate_document_annotation_without_classname.json"
-            with open(path, "w") as test_validate_document_annotation_without_classname:
-                test_validate_document_annotation_without_classname.write(
-                    '''
-                    {
-                        "metadata": {
-                            "name": "text_file_example_1",
-                            "status": "NotStarted",
-                            "width": ["fsda" ,1],
-                            "height" : ["dfsadfsdf"],
-                            "is_pinned": "afdasdfadf",
-                            "url": "https://sa-public-files.s3.us-west-2.amazonaws.com/Text+project/text_file_example_1.txt",
-                            "projectId": 167826,
-                            "annotatorEmail": null,
-                            "qaEmail": null,
-                            "lastAction": {
-                                "email": "some.email@gmail.com",
-                                "timestamp": 1636620976450
-                            }
-                        },
-                        "instances": [],
-                        "tags": [],
-                        "freeText": ""
-                    }
-                    '''
-                )
-            with open(path, "r") as f:
-                data = json.loads(f.read())
-            validator = AnnotationValidators.get_validator("vector")(data)
-            validator.is_valid()
-            print(validator.generate_report())
-            self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 141)
-
     def test_validate_vector_empty_annotation_bad_role(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
             with open(f"{tmpdir_name}/vector_empty.json", "w") as vector_empty:
@@ -2336,4 +2113,4 @@ class TestSchemas(TestCase):
             validator = AnnotationValidators.get_validator("vector")(data)
             self.assertFalse(validator.is_valid())
             print(validator.generate_report())
-            self.assertEqual(len(validator.generate_report()),191)
+            self.assertEqual(len(validator.generate_report()), 191)

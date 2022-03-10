@@ -13,6 +13,11 @@ class VectorAnnotationTypeEnum(str, Enum):
     TAG = "tag"
 
 
+class DocumentAnnotationTypeEnum(str, Enum):
+    ENTITY = "entity"
+    TAG = "tag"
+
+
 class CreationTypeEnum(str, Enum):
     MANUAL = "Manual"
     PREDICTION = "Prediction"
