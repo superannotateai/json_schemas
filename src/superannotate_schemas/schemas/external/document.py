@@ -30,6 +30,7 @@ class EntityInstance(BaseDocumentInstance):
 
 class TagInstance(BaseDocumentInstance):
     attributes: Optional[List[Attribute]] = Field(list())
+    class_name: NotEmptyStr = Field(alias="className")
 
 
 class DocumentInstance(BaseDocumentInstance):
