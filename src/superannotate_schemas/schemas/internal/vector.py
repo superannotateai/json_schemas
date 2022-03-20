@@ -1,4 +1,5 @@
 from typing import List
+from typing import Any
 from typing import Optional
 from typing import Union
 
@@ -50,6 +51,7 @@ class PolyLine(VectorInstance):
 
 class Polygon(VectorInstance):
     points: conlist(Union[StrictFloat, StrictInt], min_items=3)
+    exclude: Optional[List[List[Union[StrictFloat, StrictInt]]]] = []
 
 
 class Bbox(VectorInstance):

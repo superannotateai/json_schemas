@@ -52,6 +52,7 @@ class PolyLine(VectorInstance):
 
 class Polygon(VectorInstance):
     points: conlist(Union[StrictFloat, StrictInt], min_items=3)
+    exclude: Optional[List[List[Union[StrictFloat, StrictInt]]]] = []
 
 
 class Bbox(VectorInstance):
@@ -164,4 +165,3 @@ class VectorAnnotation(BaseModel):
     comments: Optional[List[Comment]] = Field(list())
     tags: Optional[List[Tag]] = Field(list())
     instances: Optional[List[AnnotationInstance]] = Field(list())
-
