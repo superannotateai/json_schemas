@@ -7,7 +7,8 @@ sys.path.append(WORKING_DIR)
 from superannotate_schemas.validators import AnnotationValidators
 
 
-__version__ = '1.0.40b3'
+__version__ = '1.0.40'
+
 
 __all__ = [
     "__version__",
