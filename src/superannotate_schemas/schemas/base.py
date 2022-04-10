@@ -249,5 +249,4 @@ class HexColor(BaseModel):
 
     @validator("__root__")
     def validate_color(cls, v):
-        color = Color(v)
-        return color.as_hex()
+        return '#{:02X}{:02X}{:02X}'.format(*Color(v).as_rgb_tuple())
