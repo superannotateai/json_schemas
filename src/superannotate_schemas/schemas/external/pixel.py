@@ -5,7 +5,6 @@ from superannotate_schemas.schemas.base import BaseImageAnnotationInstance
 from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageMetadata
 from superannotate_schemas.schemas.base import NotEmptyStr
-from superannotate_schemas.schemas.base import StrictStr
 from superannotate_schemas.schemas.base import HexColor
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import Comment

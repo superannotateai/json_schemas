@@ -3,13 +3,13 @@ from typing import Optional
 from typing import Union
 
 from pydantic import Field
-from pydantic import StrictFloat
 from pydantic import StrictInt
 from pydantic import StrictStr
 from pydantic import ValidationError
 from pydantic import conlist
 from pydantic.error_wrappers import ErrorWrapper
 
+from superannotate_schemas.schemas.base import StrictFloat
 from superannotate_schemas.schemas.base import AxisPoint
 from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageMetadata

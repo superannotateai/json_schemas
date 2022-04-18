@@ -1,5 +1,7 @@
+import datetime
 from typing import Dict
 from typing import List
+from math import isnan
 from typing import Optional
 from typing import Union
 
@@ -8,7 +10,7 @@ from pydantic import conlist
 from pydantic import constr
 from pydantic import Extra
 from pydantic import StrictInt
-from pydantic import StrictFloat
+from pydantic import StrictFloat as PydanticStrictFloat
 from pydantic import StrictStr
 from pydantic import StrictBool
 from pydantic import Field
@@ -39,6 +41,20 @@ def enum_error_handling(self) -> str:
     return f"Invalid value, permitted: {permitted}"
 
 
+class StrictFloat(PydanticStrictFloat):
+
+    @classmethod
+    def __get_validators__(cls):
+        yield from super().__get_validators__()
+        yield cls._validate_nan
+
+    @staticmethod
+    def _validate_nan(v):
+        if isnan(v):
+            raise TypeError("NaN is not a valid float")
+        return v
+
+
 EnumMemberError.__str__ = enum_error_handling
 
 NotEmptyStr = constr(strict=True, min_length=1)
@@ -59,6 +75,7 @@ class EmailStr(StrictStr):
 
 
 class BaseModel(PyDanticBaseModel):
+
     class Config:
         extra = Extra.allow
         use_enum_values = True
@@ -96,14 +113,17 @@ class TimedBaseModel(BaseModel):
     created_at: Optional[constr(regex=DATE_REGEX)] = Field(None, alias="createdAt")
     updated_at: Optional[constr(regex=DATE_REGEX)] = Field(None, alias="updatedAt")
 
-    @validator("created_at", "updated_at", pre=True)
+    @validator("created_at", "updated_at", pre=True, always=True)
     def validate_created_at(cls, value):
-        try:
-            if value is not None:
-                constr(regex=DATE_REGEX, strict=True).validate(value)
-        except (TypeError, StrRegexError):
-            raise TypeError(DATE_TIME_FORMAT_ERROR_MESSAGE)
-        return value
+        if value:
+            try:
+                if value is not None:
+                    constr(regex=DATE_REGEX, strict=True).validate(value)
+            except (TypeError, StrRegexError):
+                raise TypeError(DATE_TIME_FORMAT_ERROR_MESSAGE)
+            return value
+        else:
+            return datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 
 
 class UserAction(BaseModel):
