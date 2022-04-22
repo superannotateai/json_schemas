@@ -9,8 +9,8 @@ from pydantic import BaseModel as PyDanticBaseModel
 from pydantic import conlist
 from pydantic import constr
 from pydantic import Extra
+from pydantic import StrictFloat
 from pydantic import StrictInt
-from pydantic import StrictFloat as PydanticStrictFloat
 from pydantic import StrictStr
 from pydantic import StrictBool
 from pydantic import Field
@@ -20,6 +20,9 @@ from pydantic.error_wrappers import ErrorWrapper
 from pydantic.errors import EnumMemberError
 from pydantic import validator
 from pydantic.validators import strict_str_validator
+from pydantic.validators import strict_float_validator
+from pydantic.validators import strict_int_validator
+from pydantic.validators import number_multiple_validator
 from pydantic.color import Color
 from pydantic.color import ColorType
 
@@ -39,20 +42,6 @@ from superannotate_schemas.schemas.constances import INVALID_DICT_MESSAGE
 def enum_error_handling(self) -> str:
     permitted = ", ".join(repr(v.value) for v in self.enum_values)
     return f"Invalid value, permitted: {permitted}"
-
-
-class StrictFloat(PydanticStrictFloat):
-
-    @classmethod
-    def __get_validators__(cls):
-        yield from super().__get_validators__()
-        yield cls._validate_nan
-
-    @staticmethod
-    def _validate_nan(v):
-        if isnan(v):
-            raise TypeError("NaN is not a valid float")
-        return v
 
 
 EnumMemberError.__str__ = enum_error_handling
@@ -84,6 +73,45 @@ class BaseModel(PyDanticBaseModel):
             "type_error.string": "str type expected",
             "value_error.missing": "field required",
         }
+
+
+class StrictPointNumber(BaseModel):
+    __root__: Union[StrictInt, StrictFloat]
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls._validate_types
+
+    @classmethod
+    def _validate_types(cls, value):
+        is_valid_float, is_valid_int = True, True
+        try:
+            cls._validate_float(value)
+        except TypeError:
+            is_valid_float = False
+        if not is_valid_float:
+            try:
+                cls._validate_int(value)
+            except TypeError:
+                is_valid_int = False
+        if is_valid_float or is_valid_int:
+            return value
+        raise TypeError("is not a valid number. Integer or float types are expected")
+
+    @classmethod
+    def _validate_int(cls, value):
+        return strict_int_validator(value)
+
+    @classmethod
+    def _validate_float(cls, value):
+        strict_float_validator(value)
+        return cls._validate_nan(value)
+
+    @staticmethod
+    def _validate_nan(v):
+        if isnan(v):
+            raise TypeError("NaN is not a valid float")
+        return v
 
 
 class AxisPoint(BaseModel):

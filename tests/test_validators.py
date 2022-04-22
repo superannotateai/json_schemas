@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from superannotate_schemas.schemas.classes import AnnotationClass
 from superannotate_schemas.validators import AnnotationValidators
+from superannotate_schemas.schemas.external.vector import Polygon
 
 
 class TestSchemas(TestCase):
@@ -973,162 +974,6 @@ class TestSchemas(TestCase):
             self.assertFalse(validator.is_valid())
             self.assertEqual(validator.generate_report(),
                              "instances[2].meta.type                           field required")
-
-    @patch('builtins.print')
-    def test_validate_vector_template_polygon_polyline_min_annotation(self, mock_print):
-        json_name = "test.json"
-        with tempfile.TemporaryDirectory() as tmpdir_name:
-            with open(f"{tmpdir_name}/{json_name}", "w") as json_file:
-                json_file.write(
-                    '''
-                    {
-                            "metadata": {
-                                "lastAction": {
-                                    "email": "some@some.com",
-                                    "timestamp": 1636964198056
-                                },
-                                "width": "1234",
-                                "height": 1540,
-                                "name": "t.png",
-                                "projectId": 164988,
-                                "isPredicted": false,
-                                "status": "Completed",
-                                "pinned": false,
-                                "annotatorEmail": null,
-                                "qaEmail": null
-                            },
-                            "comments": [],
-                            "tags": [],
-                            "instances": [
-                             {
-                            "type": "template",
-                            "classId": 880080,
-                            "probability": 100,
-                            "points": [
-                            ],
-                            "connections": [
-                                {
-                                    "id": 1,
-                                    "from": 1,
-                                    "to": 2
-                                }
-                            ],
-                            "groupId": 0,
-                            "pointLabels": {},
-                            "locked": false,
-                            "visible": true,
-                            "attributes": [],
-                            "templateId": 4728,
-                            "trackingId": null,
-                            "error": null,
-                            "createdAt": "2021-11-15T08:24:40.712Z",
-                            "createdBy": {
-                                "email": "shab.prog@gmail.com",
-                                "role": "Admin"
-                            },
-                            "creationType": "Manual",
-                            "updatedAt": "2021-11-15T08:24:46.440Z",
-                            "updatedBy": {
-                                "email": "shab.prog@gmail.com",
-                                "role": "Admin"
-                            },
-                            "className": "kj",
-                            "templateName": "templ1"
-                        },
-                                {
-                                    "type": "polygon",
-                                    "classId": 880080,
-                                    "probability": 100,
-                                    "points": [
-                                        233.69
-                                    ],
-                                    "groupId": 0,
-                                    "pointLabels": {},
-                                    "locked": true,
-                                    "visible": true,
-                                    "attributes": [],
-                                    "trackingId": null,
-                                    "error": null,
-                                    "createdAt": "2021-11-15T08:18:16.103Z",
-                                    "createdBy": {
-                                        "email": "some@some.com",
-                                        "role": "Admin"
-                                    },
-                                    "creationType": "Manual",
-                                    "updatedAt": "2021-11-15T08:18:20.233Z",
-                                    "updatedBy": {
-                                        "email": "some@some.com",
-                                        "role": "Admin"
-                                    },
-                                    "className": "kj"
-                                },
-                                {
-                                    "type": "polyline",
-                                    "classId": 880080,
-                                    "probability": 100,
-                                    "points": [
-                                        218.22
-                                    ],
-                                    "groupId": 0,
-                                    "pointLabels": {},
-                                    "locked": false,
-                                    "visible": true,
-                                    "attributes": [],
-                                    "trackingId": null,
-                                    "error": null,
-                                    "createdAt": "2021-11-15T08:18:06.203Z",
-                                    "createdBy": {
-                                        "email": "some@some.com",
-                                        "role": "Admin"
-                                    },
-                                    "creationType": "Manual",
-                                    "updatedAt": "2021-11-15T08:18:13.439Z",
-                                    "updatedBy": {
-                                        "email": "some@some.com",
-                                        "role": "Admin"
-                                    },
-                                    "className": "kj"
-                                },
-                                {
-                                    "type": "bbox",
-                                    "classId": 880080,
-                                    "probability": 100,
-                                    "points": {
-                                        "x1": 487.78,
-                                        "x2": 1190.87,
-                                        "y1": 863.91,
-                                        "y2": 1463.78
-                                    },
-                                    "groupId": 0,
-                                    "pointLabels": {},
-                                    "locked": false,
-                                    "visible": true,
-                                    "attributes": [],
-                                    "trackingId": null,
-                                    "error": null,
-                                    "createdAt": "2021-11-15T06:43:09.812Z",
-                                    "createdBy": {
-                                        "email": "some@some.com",
-                                        "role": "Admin"
-                                    },
-                                    "creationType": "Manual",
-                                    "updatedAt": "2021-11-15T08:16:48.807Z",
-                                    "updatedBy": {
-                                        "email": "some@some.com",
-                                        "role": "Admin"
-                                    },
-                                    "className": "kj"
-                                }
-                            ]
-                        }
-                '''
-                )
-
-            with open(f"{tmpdir_name}/{json_name}", "r") as f:
-                data = json.loads(f.read())
-            validator = AnnotationValidators.get_validator("vector")(data)
-            self.assertFalse(validator.is_valid())
-            self.assertEqual(len(validator.generate_report()), 246)
 
     def test_validate_video_point_labels(self):
         with tempfile.TemporaryDirectory() as tmpdir_name:
@@ -2114,3 +1959,9 @@ class TestSchemas(TestCase):
             self.assertFalse(validator.is_valid())
             print(validator.generate_report())
             self.assertEqual(len(validator.generate_report()), 191)
+
+    def test_strict_points(self):
+        try:
+            Polygon(points=["asd", 1, 1.0, 3], type="polygon")
+        except Exception as e:
+            print(333, e)
