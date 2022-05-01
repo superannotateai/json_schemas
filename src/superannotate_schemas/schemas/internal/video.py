@@ -13,7 +13,7 @@ from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.base import AnnotationStatusEnum
 
 from superannotate_schemas.schemas.base import BaseModel
-from pydantic import StrictFloat
+from superannotate_schemas.schemas.base import StrictFloat
 from pydantic import constr
 from pydantic import Field
 from pydantic import StrictBool

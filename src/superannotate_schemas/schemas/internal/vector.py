@@ -18,7 +18,7 @@ from superannotate_schemas.schemas.base import BaseModel
 from superannotate_schemas.schemas.base import NotEmptyStr
 
 from pydantic import StrictInt
-from pydantic import StrictFloat
+from superannotate_schemas.schemas.base import StrictFloat
 from pydantic import conlist
 from pydantic import Field
 from pydantic import validate_model
