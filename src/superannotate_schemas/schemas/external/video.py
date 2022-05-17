@@ -124,7 +124,7 @@ class PolylineParameter(BaseParameter):
 
 
 class PointParameter(BaseParameter):
-    timestamps: conlist(StrictNumber, min_items=2)
+    timestamps: conlist(PointTimeStamp, min_items=2)
 
 
 class EventParameter(BaseParameter):
