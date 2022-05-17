@@ -138,7 +138,7 @@ class BboxInstance(BaseModel):
 
 class PointInstance(BaseModel):
     meta: PointInstanceMetadata
-    parameters: conlist(BboxParameter, min_items=1)
+    parameters: conlist(PointParameter, min_items=1)
 
 
 class PolygonInstance(BaseModel):
