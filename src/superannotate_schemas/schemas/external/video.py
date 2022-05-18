@@ -165,7 +165,7 @@ ANNOTATION_TYPES = {
 
 class AnnotationInstance(BaseModel):
     __root__: Union[
-        BboxInstance, EventInstance
+        BboxInstance, EventInstance, PointInstance
     ]
 
     @classmethod
