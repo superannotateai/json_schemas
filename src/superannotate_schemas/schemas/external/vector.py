@@ -9,7 +9,6 @@ from pydantic import ValidationError
 from pydantic import conlist
 from pydantic.error_wrappers import ErrorWrapper
 
-from superannotate_schemas.schemas.base import StrictPointNumber
 from superannotate_schemas.schemas.base import AxisPoint
 from superannotate_schemas.schemas.base import BaseAttribute
 from superannotate_schemas.schemas.base import BaseImageMetadata
@@ -21,6 +20,7 @@ from superannotate_schemas.schemas.base import Comment
 from superannotate_schemas.schemas.base import INVALID_DICT_MESSAGE
 from superannotate_schemas.schemas.base import NotEmptyStr
 from superannotate_schemas.schemas.base import StrictNumber
+from superannotate_schemas.schemas.base import StrictPointNumber
 from superannotate_schemas.schemas.base import Tag
 from superannotate_schemas.schemas.enums import VectorAnnotationTypeEnum
 

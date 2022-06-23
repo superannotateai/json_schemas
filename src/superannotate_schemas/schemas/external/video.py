@@ -143,7 +143,7 @@ class PointInstance(BaseModel):
 
 class PolygonInstance(BaseModel):
     meta: PolygonInstanceMetadata
-    parameters: conlist(PolylineParameter, min_items=1)
+    parameters: conlist(PolygonParameter, min_items=1)
 
 
 class PolylineInstance(BaseModel):
@@ -159,7 +159,9 @@ class EventInstance(BaseModel):
 ANNOTATION_TYPES = {
     VideoType.BBOX: BboxInstance,
     VideoType.EVENT: EventInstance,
-    VideoType.POINT: PointInstance
+    VideoType.POINT: PointInstance,
+    VideoType.POLYGON: PolygonInstance,
+    VideoType.POLYLINE: PolylineInstance
 }
 
 
