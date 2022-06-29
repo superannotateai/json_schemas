@@ -61,6 +61,14 @@ class PointTimeStamp(BaseTimeStamp):
     y: StrictNumber
 
 
+class PolylineTimestamp(BaseTimeStamp):
+    points = conlist(StrictPointNumber, min_items=4)
+
+
+class PolygonTimestamp(BaseTimeStamp):
+    points = conlist(StrictPointNumber, min_items=6)
+
+
 class EventTimeStamp(BaseTimeStamp):
     pass
 
@@ -116,11 +124,11 @@ class BboxParameter(BaseParameter):
 
 
 class PolygonParameter(BaseParameter):
-    timestamps: conlist(StrictPointNumber, min_items=3)
+    timestamps: conlist(PolygonTimestamp, min_items=2)
 
 
 class PolylineParameter(BaseParameter):
-    timestamps: conlist(StrictPointNumber)
+    timestamps: conlist(PolylineTimestamp, min_items=2)
 
 
 class PointParameter(BaseParameter):
@@ -167,7 +175,7 @@ ANNOTATION_TYPES = {
 
 class AnnotationInstance(BaseModel):
     __root__: Union[
-        BboxInstance, EventInstance, PointInstance
+        BboxInstance, EventInstance, PointInstance, PolylineInstance, PolygonInstance
     ]
 
     @classmethod
