@@ -62,11 +62,11 @@ class PointTimeStamp(BaseTimeStamp):
 
 
 class PolylineTimestamp(BaseTimeStamp):
-    points = conlist(StrictPointNumber, min_items=4)
+    points: conlist(StrictPointNumber, min_items=4)
 
 
 class PolygonTimestamp(BaseTimeStamp):
-    points = conlist(StrictPointNumber, min_items=6)
+    points: conlist(StrictPointNumber, min_items=6)
 
 
 class EventTimeStamp(BaseTimeStamp):
