@@ -61,6 +61,14 @@ class PointTimeStamp(BaseTimeStamp):
     y: StrictNumber
 
 
+class PolylineTimestamp(BaseTimeStamp):
+    points: conlist(StrictPointNumber, min_items=4)
+
+
+class PolygonTimestamp(BaseTimeStamp):
+    points: conlist(StrictPointNumber, min_items=6)
+
+
 class EventTimeStamp(BaseTimeStamp):
     pass
 
@@ -116,11 +124,11 @@ class BboxParameter(BaseParameter):
 
 
 class PolygonParameter(BaseParameter):
-    timestamps: conlist(StrictPointNumber, min_items=3)
+    timestamps: conlist(PolygonTimestamp, min_items=2)
 
 
 class PolylineParameter(BaseParameter):
-    timestamps: conlist(StrictPointNumber)
+    timestamps: conlist(PolylineTimestamp, min_items=2)
 
 
 class PointParameter(BaseParameter):
@@ -143,7 +151,7 @@ class PointInstance(BaseModel):
 
 class PolygonInstance(BaseModel):
     meta: PolygonInstanceMetadata
-    parameters: conlist(PolylineParameter, min_items=1)
+    parameters: conlist(PolygonParameter, min_items=1)
 
 
 class PolylineInstance(BaseModel):
@@ -159,13 +167,15 @@ class EventInstance(BaseModel):
 ANNOTATION_TYPES = {
     VideoType.BBOX: BboxInstance,
     VideoType.EVENT: EventInstance,
-    VideoType.POINT: PointInstance
+    VideoType.POINT: PointInstance,
+    VideoType.POLYGON: PolygonInstance,
+    VideoType.POLYLINE: PolylineInstance
 }
 
 
 class AnnotationInstance(BaseModel):
     __root__: Union[
-        BboxInstance, EventInstance, PointInstance
+        BboxInstance, EventInstance, PointInstance, PolylineInstance, PolygonInstance
     ]
 
     @classmethod
