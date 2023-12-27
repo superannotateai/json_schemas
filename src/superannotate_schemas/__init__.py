@@ -1,14 +1,36 @@
-import os
-import sys
+"""
+An implementation of JSON Schema for Python
 
-WORKING_DIR = os.path.split(os.path.realpath(__file__))[0]
-sys.path.append(WORKING_DIR)
+The main functionality is provided by the validator classes for each of the
+supported JSON Schema versions.
 
-from superannotate_schemas.validators import AnnotationValidators
+Most commonly, `validate` is the quickest way to simply validate a given
+instance under a schema, and will create a validator for you.
+"""
 
-__version__ = '1.0.45'
+from superannotate_schemas.exceptions import (
+    ErrorTree, FormatError, RefResolutionError, SchemaError, ValidationError
+)
+from superannotate_schemas._format import (
+    FormatChecker,
+    draft3_format_checker,
+    draft4_format_checker,
+    draft6_format_checker,
+    draft7_format_checker,
+)
+from superannotate_schemas._types import TypeChecker
+from superannotate_schemas.validators import (
+    Draft3Validator,
+    Draft4Validator,
+    Draft6Validator,
+    Draft7Validator,
+    RefResolver,
+    validate,
+)
 
-__all__ = [
-    "__version__",
-    "AnnotationValidators"
-]
+try:
+    from importlib import metadata
+except ImportError:  # for Python<3.8
+    import importlib_metadata as metadata
+
+__version__ = '1.0.46'
