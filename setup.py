@@ -37,4 +37,8 @@ setup(
     entry_points={
         'console_scripts': ['superannotate_schemas = superannotate_schemas.bin.app:main']
     },
+    include_package_data=True,
+    package_data={
+        'superannotate_schemas': ['schemas/*.json'],
+    },
 )
