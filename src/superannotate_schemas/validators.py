@@ -8,8 +8,6 @@ import contextlib
 import json
 import numbers
 
-from six import add_metaclass
-
 from superannotate_schemas import (
     _legacy_validators,
     _types,
@@ -247,8 +245,7 @@ def create(
         else:
             _created_with_default_types = None
 
-    @add_metaclass(_DefaultTypesDeprecatingMetaClass)
-    class Validator(object):
+    class Validator(metaclass=_DefaultTypesDeprecatingMetaClass):
 
         VALIDATORS = dict(validators)
         META_SCHEMA = dict(meta_schema)
