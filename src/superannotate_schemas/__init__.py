@@ -33,4 +33,4 @@ try:
 except ImportError:  # for Python<3.8
     import importlib_metadata as metadata
 
-__version__ = '1.0.48'
+__version__ = '1.0.49'
